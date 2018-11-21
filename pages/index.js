@@ -2,7 +2,9 @@ import 'isomorphic-fetch';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Todo from '../components/Todo';
+import Todo from '../components/Messenger';
+
+
 
 class Index extends React.Component {
   static async getInitialProps({ store }) {

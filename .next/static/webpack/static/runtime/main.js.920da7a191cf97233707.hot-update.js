@@ -14,4 +14,4 @@ module.exports = __webpack_require__(/*! /Users/brianlouie/Workspace/Side-Projec
 
 /***/ })
 ])
-//# sourceMappingURL=main.js.c0c7f8388a28b74c7076.hot-update.js.map
+//# sourceMappingURL=main.js.920da7a191cf97233707.hot-update.js.map

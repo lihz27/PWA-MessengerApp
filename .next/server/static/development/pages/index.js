@@ -137,10 +137,68 @@ function removeTodo(todo) {
 
 /***/ }),
 
-/***/ "./components/Todo.js":
-/*!****************************!*\
-  !*** ./components/Todo.js ***!
-  \****************************/
+/***/ "./components/Message.js":
+/*!*******************************!*\
+  !*** ./components/Message.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+var _jsxFileName = "C:\\Users\\Jack\\Desktop\\HRR34\\PWA-MessengerHouse\\components\\Message.js";
+
+/* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
+  var message = _ref.message,
+      username = _ref.username,
+      firstMessage = _ref.firstMessage;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+    classname: !firstMessage ? 'first-message-' : 'another-message',
+    style: {
+      listStyle: 'none'
+    },
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 4
+    },
+    __self: this
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 5
+    },
+    __self: this
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "message-username",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 6
+    },
+    __self: this
+  }, username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: username === message.username ? 'my-message' : 'your-message',
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 8
+    },
+    __self: this
+  }, message.text, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 20
+    },
+    __self: this
+  }, "\n      .my-message {\n      background: #00e34d;\n      color: white;\n      border-radius: 10px;\n      margin-bottom: 0.1em;\n      padding: 1px 8px;\n      max-width: 60%;\n      word-break: break-all;\n      width: fit-content;\n      }\n      .your-message {\n      background: #EEF6FF;\n      border-radius: 10px;\n      margin-bottom: 0.1em;\n      padding: 1px 8px;\n      max-width: 60%;\n      word-break: break-all;\n      width: fit-content;\n      }\n      li .my-message {\n      float: right;\n      }\n      li {\n      clear: right;\n      }\n    "))));
+});
+
+/***/ }),
+
+/***/ "./components/Messenger.js":
+/*!*********************************!*\
+  !*** ./components/Messenger.js ***!
+  \*********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -153,7 +211,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! socket.io-client */ "socket.io-client");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _actions_todo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../actions/todo */ "./actions/todo.js");
-/* harmony import */ var _TodoItem__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TodoItem */ "./components/TodoItem.js");
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Message */ "./components/Message.js");
+var _jsxFileName = "C:\\Users\\Jack\\Desktop\\HRR34\\PWA-MessengerHouse\\components\\Messenger.js";
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -180,27 +240,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-var Todo =
+var Messenger =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(Todo, _React$Component);
+  _inherits(Messenger, _React$Component);
 
-  function Todo() {
+  function Messenger() {
     var _getPrototypeOf2;
 
     var _this;
 
-    _classCallCheck(this, Todo);
+    _classCallCheck(this, Messenger);
 
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Todo)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Messenger)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "state", {
       text: '',
-      messages: []
+      messages: [],
+      username: Math.floor(Math.random() * 1000).toString() //TODO need to load props from redux
+
     });
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleMessage", function (message) {
@@ -215,6 +277,7 @@ function (_React$Component) {
       e.preventDefault();
       var message = {
         id: new Date().getTime(),
+        username: _this.state.username,
         text: _this.state.text
       };
 
@@ -230,14 +293,16 @@ function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "removeTodo", function (todo) {
-      _this.props.removeTodo(todo);
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleChange", function (e) {
+      _this.setState({
+        username: e.target.value
+      });
     });
 
     return _this;
   }
 
-  _createClass(Todo, [{
+  _createClass(Messenger, [{
     key: "componentDidMount",
     value: function componentDidMount() {
       this.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_2___default()('http://localhost:3000');
@@ -254,24 +319,58 @@ function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "mdl-card mdl-shadow--2dp"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.props.todos.map(function (todo, i) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TodoItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      var sameUser = function sameUser(msg, i, arr) {
+        return i > 0 && msg.username === arr[i - 1].username;
+      };
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        onChange: this.handleChange,
+        placeholder: "enter username",
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 63
+        },
+        __self: this
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "mdl-card mdl-shadow--2dp",
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 65
+        },
+        __self: this
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 66
+        },
+        __self: this
+      }, this.state.messages.map(function (message, i, array) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Message__WEBPACK_IMPORTED_MODULE_4__["default"], {
           key: i,
-          todo: todo,
-          remove: _this2.removeTodo
-        });
-      }), this.state.messages.map(function (message, i) {
-        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_TodoItem__WEBPACK_IMPORTED_MODULE_4__["default"], {
-          key: i,
-          todo: message,
-          remove: _this2.removeTodo
+          message: message,
+          username: _this2.state.username,
+          firstMessage: sameUser(message, i, array),
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 71
+          },
+          __self: this
         });
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-        onSubmit: this.handleSubmit
+        onSubmit: this.handleSubmit,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 74
+        },
+        __self: this
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+        className: "mdl-textfield mdl-js-textfield mdl-textfield--floating-label",
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 75
+        },
+        __self: this
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
         value: this.state.text,
@@ -281,15 +380,32 @@ function (_React$Component) {
           });
         },
         className: "mdl-textfield__input",
-        id: "input"
+        id: "input",
+        placeholder: "Send a message",
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 76
+        },
+        __self: this
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         className: "mdl-textfield__label",
-        htmlFor: "input"
-      }, "Send a message"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n\t\t\t\t\t\tform {\n\t\t\t\t\t\t\tbackground: #fff;\n\t\t\t\t\t\t\tpadding: 10px;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul {\n\t\t\t\t\t\t\tmin-height: 100px;\n\t\t\t\t\t\t\tmargin: 0;\n\t\t\t\t\t\t\tpadding: 0;\n\t\t\t\t\t\t\ttext-align: left;\n\t\t\t\t\t\t\tlist-style: none;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul li {\n\t\t\t\t\t\t\tpadding: 10px;\n\t\t\t\t\t\t\tbackground: #FFF;\n\t\t\t\t\t\t\tborder-bottom: 1px solid #EEE;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul li:nth-child(2n) {\n\t\t\t\t\t\t\tbackground: #EEF6FF;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul li:last-child {\n\t\t\t\t\t\t\tborder-bottom: none;\n\t\t\t\t\t\t}\n\t\t\t\t\t\t.mdl-card {\n\t\t\t\t\t\t\tmargin: auto;\n\t\t\t\t\t\t\ttransition: all .3s;\n\t\t\t\t\t\t\ttransform: translateY(100px);\n\t\t\t\t\t\t}\n\t\t\t\t\t"));
+        htmlFor: "input",
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 84
+        },
+        __self: this
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 89
+        },
+        __self: this
+      }, "\n\t\t\t\t\t\tform {\n\t\t\t\t\t\t\tbackground: #fff;\n\t\t\t\t\t\t\tpadding: 10px;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul {\n\t\t\t\t\t\t\tmin-height: 100px;\n\t\t\t\t\t\t\tmargin: 0;\n\t\t\t\t\t\t\tpadding: 0;\n\t\t\t\t\t\t\ttext-align: left;\n\t\t\t\t\t\t\tlist-style: none;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul li {\n\t\t\t\t\t\t\tpadding: 3px;\n\t\t\t\t\t\t\tbackground: #FFF;\n\t\t\t\t\t\t}\n\t\t\t\t\t\t.mdl-card {\n\t\t\t\t\t\t\tmargin: auto;\n\t\t\t\t\t\t\ttransition: all .3s;\n\t\t\t\t\t\t\ttransform: translateY(100px);\n\t\t\t\t\t\t}\n\t\t\t\t\t")));
     }
   }]);
 
-  return Todo;
+  return Messenger;
 }(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(function (_ref) {
@@ -300,39 +416,7 @@ function (_React$Component) {
 }, {
   addTodo: _actions_todo__WEBPACK_IMPORTED_MODULE_3__["addTodo"],
   removeTodo: _actions_todo__WEBPACK_IMPORTED_MODULE_3__["removeTodo"]
-})(Todo));
-
-/***/ }),
-
-/***/ "./components/TodoItem.js":
-/*!********************************!*\
-  !*** ./components/TodoItem.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-/* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
-  var todo = _ref.todo,
-      remove = _ref.remove;
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-    style: {
-      listStyle: 'none'
-    }
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-js-ripple-effect",
-    onClick: function onClick(_) {
-      return remove(todo);
-    },
-    style: {
-      fontSize: 12
-    }
-  }, "x"), ' ', todo.text);
-});
+})(Messenger));
 
 /***/ }),
 
@@ -353,7 +437,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _components_Todo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Todo */ "./components/Todo.js");
+/* harmony import */ var _components_Messenger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Messenger */ "./components/Messenger.js");
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -398,7 +482,7 @@ function (_React$Component) {
     key: "render",
     value: function render() {
       var stars = this.props.stars;
-      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_components_Todo__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_components_Messenger__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
     }
   }], [{
     key: "getInitialProps",
