@@ -1,23 +1,68 @@
-// import TopAppBar, {TopAppBarFixedAdjust} from '@material/react-top-app-bar';
-// import MaterialIcon from '@material/react-material-icon';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// const NavBar = () => {
-//   return (
-//     <header class="mdc-top-app-bar">
-//   <div class="mdc-top-app-bar__row">
-//     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-//       <a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
-//       <span class="mdc-top-app-bar__title">Title</span>
-//     </section>
-//     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
-//       <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Download" alt="Download">file_download</a>
-//       <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Print this page" alt="Print this page">print</a>
-//       <a href="#" class="material-icons mdc-top-app-bar__action-item" aria-label="Bookmark this page" alt="Bookmark this page">bookmark</a>
-//     </section>
-//   </div>
-// </header>
-//   );
-// };
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem } from 'reactstrap';
 
-// export default NavBar;
+export default class NavBar extends React.Component {
+  constructor(props) {
+    super(props);
 
+    this.toggle = this.toggle.bind(this);
+    this.state = {
+      isOpen: false
+    };
+  }
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+  render() {
+    return (
+      <div>
+        <Navbar color="light" light expand="md">
+          <NavbarBrand href="/">reactstrap</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className="ml-auto" navbar>
+              <NavItem>
+                <NavLink href="/components/">Components</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
+              </NavItem>
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret>
+                  Options
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem>
+                    Option 1
+                  </DropdownItem>
+                  <DropdownItem>
+                    Option 2
+                  </DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem>
+                    Reset
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            </Nav>
+          </Collapse>
+        </Navbar>
+      </div>
+    );
+  }
+}

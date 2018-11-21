@@ -1,5 +1,6 @@
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
+import '!style-loader!css-loader!bootstrap/dist/css/bootstrap.css';
 
 export default class MyDocument extends Document {
   render() {
@@ -17,7 +18,9 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://code.getmdl.io/1.3.0/material.deep_purple-blue.min.css"
           />
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js">
 
         </Head>
         <body>

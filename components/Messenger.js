@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { addMessage } from '../actions/message';
 import { addHouse } from '../actions/message';
 import Message from './Message';
-// import NavBar from './NavBar';
+import NavBar from './NavBar';
 
 const generateName = () => {
   const getRandomInt = (min, max) =>
@@ -58,14 +59,14 @@ class Messenger extends React.Component {
     }
   }
 
-  componentDidUpdate() {
-    this.scrollToBottom();
-    if (!this.state.messages.length && !this.state.updated) {
-      const filtered = this.props.messages.filter(message => (message.username === 'Stephanie' +
-        ' Jiang'));
-      this.setState({ messages: filtered, updated: true })
-    }
-  }
+  // componentDidUpdate() {
+  //   this.scrollToBottom();
+  //   if (!this.state.messages.length && !this.state.updated) {
+  //     const filtered = this.state.currentConvo !== '' ? this.props.messages.filter(message => (message.username === 'Stephanie' +
+  //       ' Jiang'));
+  //     this.setState({ messages: filtered, updated: true })
+  //   }
+  // }
 
   componentDidMount() {
     this.socket = io('http://localhost:3000');
@@ -121,6 +122,7 @@ class Messenger extends React.Component {
     // let allMessages = this.props.messages.concat(this.state.messages);
     // allMessages.sort((a, b) => b.createdAt - a.createdAt);
     return (
+
       <React.Fragment>
 
         <input
@@ -128,6 +130,7 @@ class Messenger extends React.Component {
           onChange={this.handleChange}
           placeholder={'enter username'}
         />
+        <NavBar/>
 
         <div className="mdl-card mdl-shadow--2dp" id="chatview">
           <ul>
