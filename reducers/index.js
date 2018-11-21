@@ -1,5 +1,6 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 
-import messages from './todos'
+import messages from './messageReducer';
+import houses from './houseReducer';
 
-export default combineReducers({ messages })
+export default combineReducers({ messages, houses });

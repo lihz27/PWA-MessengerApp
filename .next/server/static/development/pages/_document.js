@@ -162,6 +162,9 @@ function (_Document) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
         rel: "stylesheet",
         href: "https://code.getmdl.io/1.3.0/material.deep_purple-blue.min.css"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("link", {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/icon?family=Material+Icons"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("body", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_document__WEBPACK_IMPORTED_MODULE_1__["Main"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_document__WEBPACK_IMPORTED_MODULE_1__["NextScript"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("script", {
         defer: true,
         src: "https://code.getmdl.io/1.3.0/material.min.js"
