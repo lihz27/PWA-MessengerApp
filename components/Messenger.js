@@ -2,24 +2,51 @@ import React from 'react'
 import { connect } from 'react-redux'
 import io from 'socket.io-client';
 
-import { addTodo, removeTodo } from '../actions/todo'
+import { addMessage } from '../actions/message'
 import Message from './Message'
 
-
+const generateName = () => {
+  const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+	const firstName = ["Jack", "Steven", "Brian", "Marc", "Drew", "Stephanie", "Daniel", "James", "Spencer", "Caitlin", "Jackie", "Julius", "Patrick"];
+	const lastName = ['Li', "Chung", "Tiosejo", "Louie", "Curtis", "Sockwell", "Jiang", "Bykowsky", "Detro", "Chen", "Sea", "Doyle"];
+	const name = firstName[getRandomInt(0, firstName.length)] + ' ' + lastName[getRandomInt(0, lastName.length)];
+	return name;
+};
 
 class Messenger extends React.Component {
 
-	state = {
-		text: '',
-		messages: [],
-		username: Math.floor(Math.random() * 1000).toString(),
-	}
+	constructor(props) {
+		super(props);
+    this.state = {
+      text: '',
+      messages: [],
+      username: generateName(),
+			updated: false,
+    }
+  }
+
 
 	//TODO need to load props from redux
+	// componentDidUpdate() {
+ //    const objDiv = document.getElementByClassName('mdl-card mdl-shadow--2dp');
+ //    objDiv.scrollTop = objDiv.scrollHeight;
+	// }
+
+
+
+	componentDidUpdate() {
+    // const objDiv = document.getElementById('chatview');
+    // objDiv.scrollTop = objDiv.scrollHeight;
+    this.scrollToBottom();
+		if (!this.state.messages.length && !this.state.updated) {
+      this.setState({ messages: this.props.messages , updated: true});
+		}
+	}
 
 	componentDidMount() {
 		this.socket = io('http://localhost:3000');
 		this.socket.on('message', this.handleMessage);
+		setTimeout(this.scrollToBottom, 100);
 	}
 
 	componentWillUnmount() {
@@ -27,69 +54,84 @@ class Messenger extends React.Component {
 		this.socket.close();
 	}
 
+
 	handleMessage = (message) => {
-		this.setState(state => ({ messages: state.messages.concat(message) }))
-	}
+      this.setState(state => ({ messages: state.messages.concat(message) }));
+			this.props.addMessage(message.text, message.username, message.created_at);
+	};
 
 	handleSubmit = e => {
-		e.preventDefault()
+		e.preventDefault();
 
 		const message = {
-			id: (new Date()).getTime(),
+			created_at: (new Date()).getTime(),
 			username: this.state.username,
 			text: this.state.text,
-		}
+		};
 
 		this.socket.emit('message', message);
 
-		this.props.addTodo(this.state.text);
+		this.props.addMessage(this.state.text, this.state.username, message.created_at);
 		this.setState(state => ({
 			text: '',
-			messages: state.messages.concat(message),
+			messages: this.state.messages.concat(message)
 		}))
-	}
+	};
+
+	scrollToBottom = () => {
+		this.el.scrollIntoView({ behavior: 'instant'});
+	};
 
 	handleChange = e => {
 		this.setState({username: e.target.value})
-	}
+	};
 
 	render() {
 		const sameUser = (msg, i, arr) => {
 			return i > 0 && msg.username === arr[i - 1].username;
 		};
+
+		let allMessages = this.props.messages.concat(this.state.messages);
+		allMessages.sort((a, b) => b.createdAt - a.createdAt);
 		return (
 			<>
 
         <input type="text" onChange={this.handleChange} placeholder={"enter username"}/>
 
-				<div className="mdl-card mdl-shadow--2dp">
+				<div className="mdl-card mdl-shadow--2dp" id="chatview" >
 				<ul>
-					{/*{this.props.todos.map((todo, i) => (*/}
-						{/*<TodoItem key={i} todo={todo} remove={this.removeTodo} />*/}
-					{/*))}*/}
+					{/*{this.props.messages.map((message, i, array) => (*/}
+          {/*<Message key={i} message={message} username={this.state.username} firstMessage={sameUser(message, i, array)}/>*/}
+        {/*))}*/}
 					{this.state.messages.map((message, i, array) => (
             <Message key={i} message={message} username={this.state.username} firstMessage={sameUser(message, i, array)}/>
 					))}
+					<div ref={el => { this.el = el;}} />
 				</ul>
-				<form onSubmit={this.handleSubmit}>
-					<div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-						<input
-							type="text"
-							value={this.state.text}
-							onChange={e => this.setState({ text: e.target.value })}
-							className="mdl-textfield__input"
-							id="input"
-							placeholder={"Send a message"}
-						/>
-						<label className="mdl-textfield__label" htmlFor="input">
+          <form onSubmit={this.handleSubmit} autoComplete="off">
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input
+                type="text"
+                value={this.state.text}
+                onChange={e => this.setState({ text: e.target.value })}
+                className="mdl-textfield__input"
+                id="message-input"
+                placeholder={"Send a message"}
+              />
+              <label className="mdl-textfield__label" htmlFor="message-input">
 
-						</label>
-					</div>
-				</form>
+              </label>
+            </div>
+          </form>
 				<style>{`
+						#message-input {
+						border-bottom: lightgray solid 1px;
+						border-top: lightgray solid 1px;
+						height: 20px;
+						}
 						form {
 							background: #fff;
-							padding: 10px;
+							padding: 0px 10px 0px 10px;
 						}
 						ul {
 							min-height: 100px;
@@ -97,6 +139,7 @@ class Messenger extends React.Component {
 							padding: 0;
 							text-align: left;
 							list-style: none;
+							overflow-y: scroll;
 						}
 						ul li {
 							padding: 3px;
@@ -106,15 +149,18 @@ class Messenger extends React.Component {
 							margin: auto;
 							transition: all .3s;
 							transform: translateY(100px);
+							min-height: 500px;
+							max-height: 500px;
 						}
 					`}</style>
 			</div>
+
 				</>
 		)
 	}
 }
 
 export default connect(
-	({ todos }) => ({ todos }),
-	{ addTodo, removeTodo }
+	({ messages }) => ({ messages }),
+	{ addMessage }
 )(Messenger)

@@ -1,20 +1,20 @@
-import { ADD_TODO, REMOVE_TODO } from '../actions'
+import { ADD_MESSAGE } from '../actions'
 
 export default function(state = [], action) {
-	const { type, text, todo } = action
+	const { type, text, username, created_at } = action
 	switch (type) {
-		case ADD_TODO:
+		case ADD_MESSAGE:
 			return [
 				...state,
 				{
 					id: Math.random()
 						.toString(36)
 						.substring(2),
-					text
+					text,
+					username,
+					created_at,
 				}
 			]
-		case REMOVE_TODO:
-			return state.filter(i => i !== todo)
 		default:
 			return state
 	}
