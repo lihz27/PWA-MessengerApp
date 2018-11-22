@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { addMessage } from '../actions/message';
 import { addHouse } from '../actions/message';
 import Message from './Message';
@@ -59,19 +57,18 @@ class Messenger extends React.Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   this.scrollToBottom();
-  //   if (!this.state.messages.length && !this.state.updated) {
-  //     const filtered = this.state.currentConvo !== '' ? this.props.messages.filter(message => (message.username === 'Stephanie' +
-  //       ' Jiang'));
-  //     this.setState({ messages: filtered, updated: true })
-  //   }
-  // }
+  componentDidUpdate() {
+    this.scrollToBottom();
+    if (!this.state.messages.length && !this.state.updated) {
+      const filtered = this.state.currentConvo !== '' ? this.props.messages.filter(message => (message.username === this.state.currentConvo)) : this.props.messages;
+      this.setState({ messages: filtered, updated: true })
+    }
+  }
 
   componentDidMount() {
     this.socket = io('http://localhost:3000');
     this.socket.on('message', this.handleMessage);
-    setTimeout(this.scrollToBottom, 100)
+    setTimeout(this.scrollToBottom, 100);
   }
 
   componentWillUnmount() {
@@ -119,10 +116,7 @@ class Messenger extends React.Component {
       return i > 0 && msg.username === arr[i - 1].username
     };
 
-    // let allMessages = this.props.messages.concat(this.state.messages);
-    // allMessages.sort((a, b) => b.createdAt - a.createdAt);
     return (
-
       <React.Fragment>
 
         <input
@@ -130,9 +124,9 @@ class Messenger extends React.Component {
           onChange={this.handleChange}
           placeholder={'enter username'}
         />
-        <NavBar/>
-
         <div className="mdl-card mdl-shadow--2dp" id="chatview">
+          <NavBar />
+
           <ul>
             {/*{this.props.messages.map((message, i, array) => (*/}
             {/*<Message key={i} message={message} username={this.state.username} firstMessage={sameUser(message, i, array)}/>*/}
@@ -147,7 +141,7 @@ class Messenger extends React.Component {
             ))}
             <div
               ref={el => {
-                this.el = el
+                this.el = el;
               }}
             />
           </ul>
@@ -192,6 +186,9 @@ class Messenger extends React.Component {
 							transform: translateY(100px);
 							min-height: 500px;
 							max-height: 500px;
+						}
+						.mdl-textfield {
+							padding: 28px 0;
 						}
 					`}</style>
         </div>

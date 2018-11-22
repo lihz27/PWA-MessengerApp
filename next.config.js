@@ -1,9 +1,8 @@
 const path = require('path');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const withCSS = require('@zeit/next-css')
-module.exports = withCSS();
 
-module.exports = {
+module.exports = withCSS({
   webpack: (config, { buildId, dev }) => {
     const oldEntry = config.entry;
 
@@ -31,4 +30,4 @@ module.exports = {
 
     return config;
   },
-};
+});
