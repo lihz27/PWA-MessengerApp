@@ -1,10 +1,6 @@
-#*
-*.o
-*.pyc
-*.pyo
-*~
-extern/
-heroku.yml
-node_modules/
+extern
+node_modules
 tmp
-vendor/
+vendor
+.idea/workspace.xml
+.idea/misc.xml
