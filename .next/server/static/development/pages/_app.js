@@ -97,15 +97,17 @@ module.exports =
 /*!**************************!*\
   !*** ./actions/index.js ***!
   \**************************/
-/*! exports provided: ADD_MESSAGE, ADD_HOUSE */
+/*! exports provided: ADD_MESSAGE, ADD_HOUSE, ADD_USER */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_MESSAGE", function() { return ADD_MESSAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_HOUSE", function() { return ADD_HOUSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_USER", function() { return ADD_USER; });
 var ADD_MESSAGE = 'ADD_MESSAGE';
 var ADD_HOUSE = 'ADD_HOUSE';
+var ADD_USER = 'ADD_USER';
 
 /***/ }),
 
@@ -164,8 +166,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-
-/* debug to log how the store is being used */
 
 /* harmony default export */ __webpack_exports__["default"] = (next_redux_wrapper__WEBPACK_IMPORTED_MODULE_5___default()(_utils_store__WEBPACK_IMPORTED_MODULE_6__["default"], {
   debug: typeof window !== 'undefined' && "development" !== 'production'
@@ -302,14 +302,17 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "redux");
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(redux__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _messageReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./messageReducer */ "./reducers/messageReducer.js");
+/* harmony import */ var _messageReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./messageReducer */ "./reducers/messageReducer.js");
 /* harmony import */ var _houseReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./houseReducer */ "./reducers/houseReducer.js");
+/* harmony import */ var _userReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./userReducer */ "./reducers/userReducer.js");
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
-  messages: _messageReducer__WEBPACK_IMPORTED_MODULE_3__["default"],
-  houses: _houseReducer__WEBPACK_IMPORTED_MODULE_2__["default"]
+  messages: _messageReducer__WEBPACK_IMPORTED_MODULE_1__["default"],
+  houses: _houseReducer__WEBPACK_IMPORTED_MODULE_2__["default"],
+  user: _userReducer__WEBPACK_IMPORTED_MODULE_3__["default"]
 }));
 
 /***/ }),
@@ -349,6 +352,39 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         username: username,
         created_at: created_at
       }]);
+
+    default:
+      return state;
+  }
+});
+
+/***/ }),
+
+/***/ "./reducers/userReducer.js":
+/*!*********************************!*\
+  !*** ./reducers/userReducer.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../actions */ "./actions/index.js");
+
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+  var type = action.type,
+      username = action.username,
+      password = action.password;
+
+  switch (type) {
+    case _actions__WEBPACK_IMPORTED_MODULE_0__["ADD_USER"]:
+      return {
+        id: Math.random().toString(36).substring(2),
+        username: username,
+        password: password
+      };
 
     default:
       return state;
