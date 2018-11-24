@@ -1,2 +1,3 @@
 # PWA-MessengerHouse
-A real-time messenger app built with socket.io and progressive web app technology
+
+A stand-alone real-time messenger app built with socket.io and progressive web app technology. 
