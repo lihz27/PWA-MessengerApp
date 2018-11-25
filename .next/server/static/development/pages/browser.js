@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -144,8 +144,13 @@ function (_React$Component) {
   _createClass(Browser, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var script_Top = document.createElement("script");
+      script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/bundle.js";
+      script_Top.async = true;
+      document.body.appendChild(script_Top);
       var script = document.createElement("script");
       script.src = "http://hr-fec-otb.us-west-1.elasticbeanstalk.com/bundle.js";
+      script.async = true;
       document.body.appendChild(script);
     }
   }, {
@@ -156,6 +161,8 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "/messenger"
       }, "Messenger"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "top-app"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "main"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n            #main {\n              margin-left: 30px;\n            }\n            #browse-homes {\n              max-width: 100%;\n              max-height: 100%;\n            }\n            html.mdl-js {\n              background: white !important;\n            }\n          @media (max-width: 320px) {\n\n            }\n\n          "));
     }
@@ -168,7 +175,7 @@ function (_React$Component) {
 
 /***/ }),
 
-/***/ 4:
+/***/ 3:
 /*!********************************!*\
   !*** multi ./pages/browser.js ***!
   \********************************/

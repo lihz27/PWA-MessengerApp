@@ -1,4 +1,4 @@
-import { ADD_MESSAGE, ADD_HOUSE, ADD_USER } from '.';
+import { ADD_MESSAGE, ADD_HOUSE, ADD_USER, CURRENT_CONVO } from '.';
 
 export function addMessage(text, username, created_at) {
   return {
@@ -23,5 +23,12 @@ export function addUser(username, password) {
     type: ADD_USER,
     username,
     password,
+  }
+}
+
+export function addLastConvo(username) {
+  return {
+    type: CURRENT_CONVO,
+    username,
   }
 }

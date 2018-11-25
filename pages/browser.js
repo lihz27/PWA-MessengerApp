@@ -9,9 +9,15 @@ class Browser extends React.Component {
   }
 
   componentDidMount() {
+    const script_Top = document.createElement("script");
+    script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/bundle.js";
+    script_Top.async = true;
+    document.body.appendChild(script_Top);
+
     const script = document.createElement("script");
 
     script.src = "http://hr-fec-otb.us-west-1.elasticbeanstalk.com/bundle.js";
+    script.async = true;
 
     document.body.appendChild(script);
   }
@@ -20,6 +26,7 @@ class Browser extends React.Component {
     return (
       <div id="browse-homes">
         <a href='/messenger'>Messenger</a>
+        <div id="top-app" />
         <div id="main" />
         <style>
           {`
