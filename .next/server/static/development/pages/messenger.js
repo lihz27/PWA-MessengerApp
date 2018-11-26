@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -125,10 +125,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addUser", function() { return addUser; });
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! . */ "./actions/index.js");
 
-function addMessage(text, username, created_at, recipients) {
+function addMessage(text, messageType, username, created_at, recipients) {
   return {
     type: ___WEBPACK_IMPORTED_MODULE_0__["ADD_MESSAGE"],
     text: text,
+    messageType: messageType,
     username: username,
     created_at: created_at,
     recipients: recipients
@@ -167,6 +168,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "next/link");
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-drag-drop-container */ "react-drag-drop-container");
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 
@@ -175,16 +179,25 @@ var Favorites = function Favorites(props) {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "favorites-container"
   }, props.houses.map(function (obj, i) {
-    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
-      href: "/browser/".concat(obj.house_id),
-      prefetch: true
-    }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-      className: "fav-image-prev",
-      key: i,
-      src: obj.imgUrl,
-      alt: "house-image"
-    }));
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n      img {\n        cursor: pointer;\n      }\n      #favorites-container {\n        overflow-x: scroll;\n        overflow-y: hidden;\n        white-space: nowrap;\n        margin: 0 .3em 0 .3em;\n        background-color: white;\n        height: 6em;\n        justify-content: space-around;\n      }\n      .fav-image-prev {\n        display: inline-block;\n        width: 5em;\n        height: auto;\n        margin: .5em 1em;\n        border-radius: 50%;\n        border: 3px solid #BADA55;\n        draggable: false;\n        user-drag: none;\n        user-select: none;\n        -moz-user-select: none;\n        -webkit-user-drag: none;\n        -webkit-user-select: none;\n        -ms-user-select: none;\n      }\n      "));
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_3__["DragDropContainer"], {
+      onDrop: function onDrop() {
+        return props.shareFavorite(i);
+      },
+      targetKey: "fav",
+      dragClone: true,
+      render: function render() {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
+          href: "/browser/".concat(obj.house_id),
+          prefetch: true
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+          className: "fav-image-prev",
+          key: i,
+          src: obj.imgUrl,
+          alt: "house-image"
+        }));
+      }
+    });
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n      img {\n        cursor: pointer;\n      }\n      #favorites-container {\n        // overflow-x: scroll;\n        // overflow-y: hidden;\n        // white-space: nowrap;\n        margin: 0 .3em 0 .3em;\n        background-color: white;\n        height: 6em;\n        justify-content: space-around;\n      }\n      .fav-image-prev {\n        display: inline-block;\n        width: 5em;\n        height: auto;\n        margin: .5em 1em;\n        border: 3px solid black;\n        // draggable: false;\n        // user-drag: none;\n        // user-select: none;\n        // -moz-user-select: none;\n        // -webkit-user-drag: none;\n        // -webkit-user-select: none;\n        // -ms-user-select: none;\n      }\n      "));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(function (_ref) {
@@ -209,6 +222,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dayjs */ "dayjs");
 /* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dayjs__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "next/link");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
@@ -230,9 +246,15 @@ __webpack_require__.r(__webpack_exports__);
     className: "message-username"
   }, message.username), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: ownMessage ? 'my-message' : 'your-message'
-  }, message.text), !ownMessage && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+  }, message.messageType === 'text' ? message.text : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
+    href: "/browser/".concat(message.text[0])
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    className: "shared-fav",
+    src: message.text[1],
+    alt: "house-preview"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), message.messageType === 'text' ? '' : 'Check out this house!'), !ownMessage && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: "timestamp"
-  }, '  ', dayjs__WEBPACK_IMPORTED_MODULE_1___default()(message.created_at).format('h:mma')))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n          .my-subcontainer {\n            text-align: right;\n          }\n        "));
+  }, '  ', dayjs__WEBPACK_IMPORTED_MODULE_1___default()(message.created_at).format('h:mma')))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n          .shared-fav {\n          width: 6em;\n          display: block;\n          height: auto;\n          margin: .2em auto -.8em auto;\n          }\n          .my-subcontainer {\n            text-align: right;\n          }\n        "));
 });
 
 /***/ }),
@@ -258,6 +280,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Message */ "./components/Message.js");
 /* harmony import */ var _NavBar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NavBar */ "./components/NavBar.js");
 /* harmony import */ var _Favorites__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Favorites */ "./components/Favorites.js");
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-drag-drop-container */ "react-drag-drop-container");
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__);
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -291,6 +315,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -338,7 +363,9 @@ function (_React$Component) {
         });
       }
 
-      _this.props.addMessage(message.text, message.username, message.created_at);
+      _this.props.addMessage(message.text, message.messageType, message.username, message.created_at, message.recipients);
+
+      _this.scrollToBottom();
     });
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "noUserExists", function () {
@@ -408,8 +435,11 @@ function (_React$Component) {
             case 2:
               username = _context.sent;
 
-              _this.setState({
-                currentConvo: username
+              _this.setState(function (state) {
+                //TODO currently no confirmation for friends
+                state.currentConvo = username;
+                state.friends.add(username);
+                return state;
               }, function () {
                 _this.getCurrentConvo(username);
               });
@@ -443,13 +473,14 @@ function (_React$Component) {
           created_at: new Date().getTime(),
           username: _this.username,
           text: _this.state.text,
+          messageType: 'text',
           recipients: [_this.state.currentConvo]
         };
 
         _this.socket.emit('message', message); //TODO THIS ADDS TO PROPS
 
 
-        _this.props.addMessage(_this.state.text, _this.username, message.created_at, [_this.state.currentConvo]);
+        _this.props.addMessage(_this.state.text, 'text', _this.username, message.created_at, [_this.state.currentConvo]);
 
         _this.setState(function (state) {
           return {
@@ -468,13 +499,33 @@ function (_React$Component) {
       }
     });
 
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "shareFavorite", function (arrayIdx) {
+      var message = {
+        created_at: new Date().getTime(),
+        username: _this.username,
+        text: [_this.props.houses[arrayIdx].house_id, _this.props.houses[arrayIdx].imgUrl],
+        messageType: 'link',
+        recipients: [_this.state.currentConvo]
+      };
+
+      _this.socket.emit('message', message);
+
+      _this.props.addMessage(message.text, message.messageType, message.username, message.created_at, message.recipients);
+
+      _this.setState(function (state) {
+        state.messages = _toConsumableArray(_this.state.messages).concat([message]);
+        return state;
+      }, function () {
+        return _this.scrollToBottom();
+      });
+    });
+
     _this.state = {
       text: '',
       messages: [],
       updated: false,
       currentConvo: '',
       friends: new Set(),
-      currentView: 'messenger',
       typing: [],
       otherNewMessage: false
     };
@@ -559,16 +610,19 @@ function (_React$Component) {
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "mdl-card mdl-shadow--2dp",
         id: "chatview"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Favorites__WEBPACK_IMPORTED_MODULE_7__["default"], null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Favorites__WEBPACK_IMPORTED_MODULE_7__["default"], {
+        shareFavorite: this.shareFavorite
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_6__["default"], {
         newMessage: this.state.otherNewMessage,
         currentChat: this.state.currentConvo,
         addConvo: this.addConversation,
         getConvo: this.getCurrentConvo,
         friends: _toConsumableArray(this.state.friends).filter(function (notUser) {
           return notUser !== _this4.username && notUser !== _this4.state.currentConvo;
-        }),
-        currentView: this.state.currentView
-      }), this.state.currentView === 'browser' && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, "Browse Homes"), this.state.currentView === 'messenger' && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, this.state.messages.map(function (message, i, array) {
+        })
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__["DropTarget"], {
+        targetKey: "fav"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, this.state.messages.map(function (message, i, array) {
         return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Message__WEBPACK_IMPORTED_MODULE_5__["default"], {
           key: i,
           message: message,
@@ -579,7 +633,7 @@ function (_React$Component) {
         ref: function ref(el) {
           _this4.el = el;
         }
-      })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         id: "typing-status"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, typingStatusMessage)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
         onSubmit: this.handleSubmit,
@@ -600,7 +654,7 @@ function (_React$Component) {
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
         className: "mdl-textfield__label",
         htmlFor: "message-input"
-      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              height: 2.4em;\n              font-size: .7em;\n            }\n\t\t\t\t\t\t#message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 20px;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tform {\n\t\t\t\t\t\t\tbackground: #fff;\n\t\t\t\t\t\t\tpadding: 0px 10px 0px 10px;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul {\n\t\t\t\t\t\t\theight: 480px;\n\t\t\t\t\t\t\tmargin: 0;\n\t\t\t\t\t\t\tpadding: 0;\n\t\t\t\t\t\t\ttext-align: left;\n\t\t\t\t\t\t\tlist-style: none;\n\t\t\t\t\t\t\toverflow-y: scroll;\n\t\t\t\t\t\t}\n\t\t\t\t\t\tul li {\n\t\t\t\t\t\t\tpadding: 1px;\n\t\t\t\t\t\t\tbackground: #FFF;\n\t\t\t\t\t\t}\n\t\t\t\t\t\t.mdl-card {\n\t\t\t\t\t\t\tmargin: auto;\n\t\t\t\t\t\t\ttransition: all .3s;\n\t\t\t\t\t\t\ttransform: translateY(100px);\n\t\t\t\t\t\t}\n\t\t\t\t\t\t.mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n\t\t\t\t\t\t.timestamp{\n\t\t          font-size:10px;\n\t\t          font-weight: 300;\n\t\t          color: transparent;\n\t\t          margin: 3px;\n\t          }\n\t          li:hover .my-timestamp {\n\t\t          color: black;\n\t\t          transition: color .8s;\n\t          }\n\t          li:hover .timestamp {\n\t\t          color: black;\n\t\t          transition: color .8s;\n\t          }\n\t        .my-message {\n\t\t        display: inline-block;\n\t\t        background: #00e34d;\n\t\t        color: white;\n\t\t        border-radius: 10px;\n\t\t        padding: 7px;\n\t\t        max-width: 50%;\n\t\t        word-wrap: break-word;\n\t\t        clear: right;\n\t\t        line-height: 1.25;\n\t        }\n\t        .your-message {\n\t\t        display: inline-block;\n\t\t        background: #E5E5EA;\n\t\t        border-radius: 10px;\n\t\t        padding: 7px;\n\t\t        word-wrap: break-word;\n\t\t        max-width:70%;\n\t\t        line-height: 1.25;\n\t        }\n          .message-username {\n\t          display: block;\n\t          font-size: 0.8em;\n\t          font-weight: bold;\n\t          line-height: 1.5;\n\t          margin-left: 0.6em;\n          }\n          .send-msg-btn {\n            cursor:pointer;\n          }\n   \t\t\t\t.mdl-textfield__label:after{\n            background-color: #0069E0;\n          }\n\t\t\t\t\t"));
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            .droptarget {\n              height: 440px;\n            }\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              height: 2.4em;\n              font-size: .7em;\n            }\n            #message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 3em;\n            }\n            form {\n              background: #fff;\n              padding: 0px 10px 0px 10px;\n            }\n            ul {\n              position: relative;\n              top:0.5em;\n              height: 350px;\n              margin: 0;\n              padding: 0;\n              text-align: left;\n              list-style: none;\n              overflow-y: scroll;\n            }\n            ul li {\n              padding: 1px;\n              background: #FFF;\n            }\n            .mdl-card {\n              margin: auto;\n              transition: all .3s;\n              // transform: translateY(100px);\n            }\n            .mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n            .timestamp{\n              font-size:10px;\n              font-weight: 300;\n              color: transparent;\n              margin: 3px;\n            }\n            li:hover .my-timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            li:hover .timestamp {\n              color: black;\n              transition: color .8s;\n            }\n          .my-message {\n            display: inline-block;\n            font-weight: 400;\n            background: #00e34d;\n            color: white;\n            border-radius: 10px;\n            padding: 7px;\n            max-width: 50%;\n            word-wrap: break-word;\n            clear: right;\n            line-height: 1.25;\n          }\n          .your-message {\n            display: inline-block;\n            background: #E5E5EA;\n            border-radius: 10px;\n            padding: 7px;\n            word-wrap: break-word;\n            max-width:70%;\n            line-height: 1.25;\n          }\n          .message-username {\n            display: block;\n            font-size: 0.8em;\n            font-weight: bold;\n            line-height: 1.5;\n            margin-left: 0.6em;\n          }\n          .send-msg-btn {\n            cursor:pointer;\n          }\n          .mdl-textfield__label:after{\n            background-color: #0069E0;\n          }\n          "));
     }
   }]);
 
@@ -644,36 +698,37 @@ var NavBar = function NavBar(_ref) {
       newMessage = _ref.newMessage,
       changeHome = _ref.changeHome,
       changeMessage = _ref.changeMessage,
-      currentView = _ref.currentView,
       addConvo = _ref.addConvo,
       currentChat = _ref.currentChat;
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "navbar-container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Chatting with ", currentChat), currentView === 'messenger' && react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "convo-status"
+  }, "Chatting with ", currentChat), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
     href: "/browser",
     prefetch: true
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
     src: "../static/house.png",
     id: "house-button",
     alt: ""
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-    className: "far fa-heart"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, newMessage ? 'You have a new message' : '')), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, newMessage ? 'You have a new message' : '')), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "dropdown"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "dropbtn"
-  }, "Menu"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fas fa-bars"
+  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "dropdown-content"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
     onClick: addConvo
-  }, "Start a new conversation"), friends.slice(-5).map(function (friend, i) {
+  }, "Start a new convo"), friends.slice(-5).map(function (friend, i) {
     return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       key: i,
       onClick: function onClick() {
         return getConvo("".concat(friend));
       }
     }, friend);
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        a {\n        font-size: 12px;\n        }\n        #navbar-container {\n        display: flex;\n        justify-content: flex-end;\n        }\n        #house-button {\n        margin-right: 12px;\n        height: 50px;\n        width: auto;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            padding: 10px;\n            font-size: 16px;\n            border: none;\n            cursor: pointer;\n            width: 120px;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n            // padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        #convo-status {\n          color: white;\n          font-size: .8em;\n        }\n        a {\n          font-size: 12px;\n        }\n        #navbar-container {\n          display: flex;\n          justify-content: flex-end;\n          background-color: #0069E0;\n        }\n        #house-button {\n          margin-right: 12px;\n          height: 50px;\n          width: auto;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            font-size: 16px;\n            border: none;\n            cursor: pointer;\n            width: 120px;\n            margin: .5em .2em;\n            text-align: end;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n             padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (NavBar);
@@ -703,7 +758,7 @@ var MessengerView = function MessengerView() {
 
 /***/ }),
 
-/***/ 3:
+/***/ 5:
 /*!**********************************!*\
   !*** multi ./pages/messenger.js ***!
   \**********************************/
@@ -756,6 +811,17 @@ module.exports = require("next/link");
 /***/ (function(module, exports) {
 
 module.exports = require("react");
+
+/***/ }),
+
+/***/ "react-drag-drop-container":
+/*!********************************************!*\
+  !*** external "react-drag-drop-container" ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-drag-drop-container");
 
 /***/ }),
 

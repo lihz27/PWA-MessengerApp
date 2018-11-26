@@ -5,9 +5,7 @@ import { addHouse } from '../actions/message';
 class Browser extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      test: '',
-    };
+
   }
 
   componentDidMount() {
@@ -60,7 +58,8 @@ class Browser extends React.Component {
         <style>
           {`
             #main {
-              margin-left: 30px;
+              margin-left: -105px;
+              transform: scale(.5);
             }
             #browse-homes {
               max-width: 100%;

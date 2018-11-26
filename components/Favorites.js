@@ -11,16 +11,22 @@ const Favorites = (props) => {
 
       {props.houses.map((obj, i) => (
           <DragDropContainer
-            onDrop={() => this.props.shareFavorite(i)}
+            onDrop={() => props.shareFavorite(i)}
             targetKey="fav"
+            dragClone={true}
+            render={() => (
+              <Link href={`/browser/${obj.house_id}`} prefetch>
+              <img className='fav-image-prev'
+                   key={i}
+                   src={obj.imgUrl}
+                   alt="house-image"
+              />
+              </Link>
+            )}
           >
-        <Link href={`/browser/${obj.house_id}`} prefetch>
-	    	<img className='fav-image-prev'
-	    			 key={i}
-	    			 src={obj.imgUrl}
-	    		   alt="house-image"
-	      />
-        </Link>
+
+
+
           </DragDropContainer>
 	    ))}
 
@@ -29,9 +35,9 @@ const Favorites = (props) => {
         cursor: pointer;
       }
       #favorites-container {
-        overflow-x: scroll;
-        overflow-y: hidden;
-        white-space: nowrap;
+        // overflow-x: scroll;
+        // overflow-y: hidden;
+        // white-space: nowrap;
         margin: 0 .3em 0 .3em;
         background-color: white;
         height: 6em;
@@ -42,15 +48,14 @@ const Favorites = (props) => {
         width: 5em;
         height: auto;
         margin: .5em 1em;
-        border-radius: 50%;
-        border: 3px solid #BADA55;
-        draggable: false;
-        user-drag: none;
-        user-select: none;
-        -moz-user-select: none;
-        -webkit-user-drag: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
+        border: 3px solid black;
+        // draggable: false;
+        // user-drag: none;
+        // user-select: none;
+        // -moz-user-select: none;
+        // -webkit-user-drag: none;
+        // -webkit-user-select: none;
+        // -ms-user-select: none;
       }
       `}</style>
 	  </div>

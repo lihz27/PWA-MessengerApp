@@ -32,10 +32,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addUser", function() { return addUser; });
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! . */ "./actions/index.js");
 
-function addMessage(text, username, created_at, recipients) {
+function addMessage(text, messageType, username, created_at, recipients) {
   return {
     type: ___WEBPACK_IMPORTED_MODULE_0__["ADD_MESSAGE"],
     text: text,
+    messageType: messageType,
     username: username,
     created_at: created_at,
     recipients: recipients
@@ -3557,9 +3558,6 @@ function (_React$Component) {
       _this.props.addHouse(houseNum, _this.props.user.username, imgUrl);
     });
 
-    _this.state = {
-      test: ''
-    };
     return _this;
   }
 
@@ -3601,7 +3599,7 @@ function (_React$Component) {
         id: "top-app"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "main"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n            #main {\n              margin-left: 30px;\n            }\n            #browse-homes {\n              max-width: 100%;\n              max-height: 100%;\n            }\n            html.mdl-js {\n              background: white !important;\n            }\n          @media (max-width: 320px) {\n\n            }\n\n          "));
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n            #main {\n              margin-left: -105px;\n              transform: scale(.5);\n            }\n            #browse-homes {\n              max-width: 100%;\n              max-height: 100%;\n            }\n            html.mdl-js {\n              background: white !important;\n            }\n          @media (max-width: 320px) {\n\n            }\n\n          "));
     }
   }]);
 
@@ -3640,7 +3638,7 @@ function (_React$Component) {
 
 /***/ }),
 
-/***/ 5:
+/***/ 4:
 /*!********************************!*\
   !*** multi ./pages/browser.js ***!
   \********************************/
@@ -3665,5 +3663,5 @@ module.exports = dll_ce91d52655bad4e4cbb5;
 
 /***/ })
 
-},[[5,"static/runtime/webpack.js"]]]));;
+},[[4,"static/runtime/webpack.js"]]]));;
 //# sourceMappingURL=browser.js.map

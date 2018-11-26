@@ -81,7 +81,8 @@ class Messenger extends React.Component {
     } else {
       this.setState({otherNewMessage: true});
     }
-    this.props.addMessage(message.text, message.username, message.messageType, message.created_at);
+    this.props.addMessage(message.text, message.messageType, message.username, message.created_at, message.recipients);
+    this.scrollToBottom();
   };
 
   noUserExists = () => {
@@ -122,7 +123,12 @@ class Messenger extends React.Component {
 
   addConversation = async () => {
     const username = await prompt('enter a username');
-    this.setState({currentConvo: username}, () => {
+    this.setState(state => {
+      //TODO currently no confirmation for friends
+      state.currentConvo = username;
+      state.friends.add(username);
+      return state;
+    }, () => {
       this.getCurrentConvo(username);
     })
   };
@@ -176,16 +182,21 @@ class Messenger extends React.Component {
     const message = {
       created_at: new Date().getTime(),
       username: this.username,
-      text: [arrayIdx, this.props.houses[arrayIdx].imgUrl],
+      text: [this.props.houses[arrayIdx].house_id, this.props.houses[arrayIdx].imgUrl],
       messageType: 'link',
       recipients: [this.state.currentConvo],
     };
+    this.socket.emit('message', message);
     this.props.addMessage(
       message.text,
       message.messageType,
       message.username,
       message.created_at,
-      message.recipients)
+      message.recipients);
+    this.setState(state => {
+      state.messages = [...this.state.messages, message];
+      return state;
+    }, () => this.scrollToBottom())
   };
 
   render() {
@@ -201,9 +212,10 @@ class Messenger extends React.Component {
           : 'several people are typing';
     return (
       <div className="mdl-card mdl-shadow--2dp" id="chatview">
-        <Favorites />
-        <NavBar
+        <Favorites
           shareFavorite={this.shareFavorite}
+        />
+        <NavBar
           newMessage={this.state.otherNewMessage}
           currentChat={this.state.currentConvo}
           addConvo={this.addConversation}
@@ -211,9 +223,7 @@ class Messenger extends React.Component {
           friends={[...this.state.friends].filter(notUser => notUser !== this.username && notUser !== this.state.currentConvo)}
         />
         <DropTarget
-          key='fav'
-          //TODO THIS ISn"T RIGHT
-          onDrop={this.shareFavorite}
+          targetKey='fav'
         >
         <ul>
           {this.state.messages.map((message, i, array) => (
@@ -254,6 +264,9 @@ class Messenger extends React.Component {
         </form>
         <style>
           {`
+            .droptarget {
+              height: 440px;
+            }
             #chatview {
               width: 320px;
               height: 568px;
@@ -265,14 +278,16 @@ class Messenger extends React.Component {
             #message-input {
               border-bottom: lightgray solid 1px;
               border-top: lightgray solid 1px;
-              height: 20px;
+              height: 3em;
             }
             form {
               background: #fff;
               padding: 0px 10px 0px 10px;
             }
             ul {
-              height: 480px;
+              position: relative;
+              top:0.5em;
+              height: 350px;
               margin: 0;
               padding: 0;
               text-align: left;
@@ -286,7 +301,7 @@ class Messenger extends React.Component {
             .mdl-card {
               margin: auto;
               transition: all .3s;
-              transform: translateY(100px);
+              // transform: translateY(100px);
             }
             .mdl-textfield__input {
               display:inline-block;
@@ -309,6 +324,7 @@ class Messenger extends React.Component {
             }
           .my-message {
             display: inline-block;
+            font-weight: 400;
             background: #00e34d;
             color: white;
             border-radius: 10px;

@@ -21,9 +21,10 @@ export default ({ message, username, firstMessage }) => {
           <div className={ownMessage ? 'my-message' : 'your-message'}>
             {message.messageType === 'text' ? message.text
             : (<Link href={`/browser/${message.text[0]}`}>
-                <img src={message.text[1]} alt='house-preview'/>
+                <img className='shared-fav' src={message.text[1]} alt='house-preview'/>
               </Link>)
             }
+            <br />
             {message.messageType === 'text' ? '' : 'Check out this house!'}
           </div>
           {!ownMessage && (
@@ -37,6 +38,12 @@ export default ({ message, username, firstMessage }) => {
 
       <style>
         {`
+          .shared-fav {
+          width: 6em;
+          display: block;
+          height: auto;
+          margin: .2em auto -.8em auto;
+          }
           .my-subcontainer {
             text-align: right;
           }
