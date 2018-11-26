@@ -4,21 +4,20 @@ import Link from 'next/link'
 const NavBar = ({
   getConvo,
   friends,
+  newMessage,
   changeHome,
   changeMessage,
-  currentView,
   addConvo,
   currentChat
 }) => (
   <div id="navbar-container">
     <div>Chatting with {currentChat}</div>
-    {currentView === 'messenger' && (
       <Link href='/browser' prefetch>
         <a><img src="../static/house.png" id="house-button" alt='' /></a>
       </Link>
-    )}
     <span>
       <i className="far fa-heart" />
+      <div>{newMessage ? 'You have a new message' : ''}</div>
     </span>
     <div className="dropdown">
       <button className="dropbtn">Menu</button>

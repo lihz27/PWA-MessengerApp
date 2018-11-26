@@ -2,7 +2,6 @@ const { createServer } = require('http');
 const path = require('path');
 const next = require('next');
 const bcrypt = require('bcrypt');
-
 const saltRounds = 10;
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -75,6 +74,9 @@ const server = createServer((req, res) => {
       });
 
   } else {
+    if (req.url.startsWith('/browser')) {
+      req.url = '/browser';
+    }
     handle(req, res);
   }
 });
@@ -106,7 +108,7 @@ io.on('connection', (socket) => {
     data.recipients.forEach(person => {
       io.to(`${socketIds[person]}`).emit('message', data);
     });
-  });
+});
 
   socket.on('typing', (data) => {
     data.recipients.forEach(person => {
