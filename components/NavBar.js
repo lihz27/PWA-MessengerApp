@@ -9,50 +9,77 @@ const NavBar = ({
   changeMessage,
   addConvo,
   currentChat
-}) => (
-  <div id="navbar-container">
-    <div id='convo-status'>Chatting with {currentChat}</div>
-      <Link href='/browser' prefetch>
-        <a><img src="../static/house.png" id="house-button" alt='' /></a>
-      </Link>
-    <span>
-      {/*<i className="far fa-heart" />*/}
-      <div>{newMessage ? 'You have a new message' : ''}</div>
-    </span>
-    <div className="dropdown">
-      <button className="dropbtn"><i className="fas fa-bars"></i></button>
-      <div className="dropdown-content">
-        <a onClick={addConvo}>Start a new convo</a>
-        {friends.slice(-5).map((friend, i) => (
-          <a key={i} onClick={() => getConvo(`${friend}`)}>
-            {friend}
-          </a>
-        ))}
+}) => {
+  return (
+    <div id="navbar-container">
+      <div id='convo-status'>
+        Chatting with <br/>
+        {currentChat}
       </div>
-    </div>
-    <style>
-      {`
+      <Link href='/browser' prefetch>
+        {/* <a><img src="../static/house.png" id="house-button" alt='' /></a> */}
+        <a id="house-button2"><i className="fa fa-home"> Home</i></a>
+
+      </Link>
+      <span>
+      {/* <i className="far fa-heart" /> */}
+        {/*TODO NEED TO MAKE THIS DISAPPEAR AFTER USER READS MESSAGE */}
+        <div id='new-message-badge'>{newMessage ? 'New message' : ''}</div>
+    </span>
+      <div className="dropdown">
+        <button className="dropbtn"
+        ><i className="fas fa-bars"> Menu</i></button>
+        <div className="dropdown-content">
+          <a onClick={addConvo}>Start a new convo</a>
+          {friends.slice(-5).map((friend, i) => (
+            <a key={i} onClick={() => getConvo(`${friend}`)}>
+              {friend}
+            </a>
+          ))}
+        </div>
+      </div>
+      <style>
+        {`
+        #new-message-badge {
+          background: red;
+          color: white;
+          position: absolute;
+          font-size: .75em;
+          z-index: 1;
+          left: 18em;
+        }
         #convo-status {
           color: white;
           font-size: .8em;
+          position: relative; /*  */
         }
         a {
           font-size: 12px;
         }
         #navbar-container {
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-around; /* changed to space-around from flex-end */
           background-color: #0069E0;
+          height: 3em; /*  */
         }
         #house-button {
           margin-right: 12px;
-          height: 50px;
-          width: auto;
+          width: auto; /* deleted height */
+        }
+        #house-button:hover {
+          transform: scale(1.2); /* added zoom */
+        }
+        #house-button2 {
+          color: white;
+          position: relative;
+          left: 1.5em;
+          top: 20%;
+          font-size:1em;
         }
         .dropbtn {
             background-color: #0069E0;
             color: white;
-            font-size: 16px;
+            font-size: 1em; /* changed to 1em from 16px */
             border: none;
             cursor: pointer;
             width: 120px;
@@ -86,8 +113,9 @@ const NavBar = ({
             background-color: #0069E0;
         }
       `}
-    </style>
-  </div>
-);
+      </style>
+    </div>
+  );
+};
 
 export default NavBar;

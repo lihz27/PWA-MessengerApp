@@ -1,7 +1,3 @@
-//Displays pop up message from the browser to request permission to allow notifications
-//response is stored along with the app (calling again returns user's last choice)
-
-//check if supported by browser
 export default function () {
   if (!('Notification' in window)) {
     console.log('Notifications not supported in this browser');
@@ -13,13 +9,12 @@ export default function () {
   }
 }
 
-export const testNotification = () => {
+export const messageAlert = (msgBody, sender = 'MessengerHouse App') => {
   if ('Notification' in window) {
     if (Notification.permission === 'granted') {
         navigator.serviceWorker.getRegistration().then(reg => {
-          console.log('this is reg', reg);
           const options = {
-            body: 'First notification!',
+            body: msgBody,
             tag: 'id1',
             icon: 'static/img/apple-touch-icon-120x120.png',
             vibrate: [100, 50, 100],
@@ -36,9 +31,9 @@ export const testNotification = () => {
               },
             ]
           };
-          console.log('reg.showNotificatioN', reg.showNotification);
-          reg.showNotification('Hello world!', options);
-          });
+          reg.showNotification(`New message from ${sender}`, options)
+
+          }).catch(err => console.error(err));
     }
   }
 };

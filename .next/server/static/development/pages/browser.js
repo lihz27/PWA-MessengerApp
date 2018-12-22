@@ -167,6 +167,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "react-redux");
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_redux__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _actions_message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions/message */ "./actions/message.js");
+/* harmony import */ var _utils_notification__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utils/notification */ "./utils/notification.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -186,6 +187,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -227,23 +229,23 @@ function (_React$Component) {
   _createClass(Browser, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var script_Top = document.createElement("script");
-      script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/PWAbundle.js";
-      script_Top.async = true;
-      document.body.appendChild(script_Top);
-      var script = document.createElement("script");
-      script.src = "https://s3-us-west-1.amazonaws.com/housing-hr/PWAbundle.js";
-      script.async = true;
-      document.body.appendChild(script);
-
-      var delayForRender = function delayForRender() {
-        var favoriteButton = document.getElementById('add-favorites');
-        favoriteButton.addEventListener('click', _this2.addFavorite);
-      };
-
-      setTimeout(delayForRender, 2000);
+      Object(_utils_notification__WEBPACK_IMPORTED_MODULE_3__["default"])(); // temporarily shut down the hosting for these aspects of the app
+      // const script_Top = document.createElement("script");
+      // script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/PWAbundle.js";
+      // script_Top.async = true;
+      // document.body.appendChild(script_Top);
+      // const script = document.createElement("script");
+      //
+      // script.src = "https://s3-us-west-1.amazonaws.com/housing-hr/PWAbundle.js";
+      // script.async = true;
+      //
+      // document.body.appendChild(script);
+      // const delayForRender = () => {
+      //   const favoriteButton = document.getElementById('add-favorites');
+      //   favoriteButton.addEventListener('click', this.addFavorite);
+      // };
+      //
+      // setTimeout(delayForRender, 2000);
     }
   }, {
     key: "componentWillUnmount",
@@ -279,6 +281,60 @@ function (_React$Component) {
 }, {
   addHouse: _actions_message__WEBPACK_IMPORTED_MODULE_2__["addHouse"]
 })(Browser));
+
+/***/ }),
+
+/***/ "./utils/notification.js":
+/*!*******************************!*\
+  !*** ./utils/notification.js ***!
+  \*******************************/
+/*! exports provided: default, messageAlert */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "messageAlert", function() { return messageAlert; });
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  if (!('Notification' in window)) {
+    console.log('Notifications not supported in this browser');
+  } else {
+    Notification.requestPermission(function (status) {
+      console.log('Notification permission status:', status);
+    });
+  }
+});
+var messageAlert = function messageAlert(msgBody) {
+  var sender = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'MessengerHouse App';
+
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      navigator.serviceWorker.getRegistration().then(function (reg) {
+        var options = {
+          body: msgBody,
+          tag: 'id1',
+          icon: 'static/img/apple-touch-icon-120x120.png',
+          vibrate: [100, 50, 100],
+          data: {
+            dateOfArrival: Date.now(),
+            primaryKey: 1
+          },
+          actions: [{
+            action: 'explore',
+            title: 'Go to the site',
+            icon: 'static/img/apple-touch-icon-120x120.png'
+          }, {
+            action: 'close',
+            title: 'Close the notification',
+            icon: 'static/img/apple-touch-icon-120x120.png'
+          }]
+        };
+        reg.showNotification("New message from ".concat(sender), options);
+      }).catch(function (err) {
+        return console.error(err);
+      });
+    }
+  }
+};
 
 /***/ }),
 

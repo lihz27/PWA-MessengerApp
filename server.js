@@ -4,6 +4,7 @@ const next = require('next');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dir: '.', dev });
 const handle = app.getRequestHandler();
@@ -25,7 +26,7 @@ const server = createServer((req, res) => {
         bcrypt.genSalt(saltRounds, function(err, salt) {
           bcrypt.hash(parsed.password, salt, function(err, hash) {
             parsed.password = hash;
-            console.log(parsed);
+            parsed._id = parsed.username;
             User.create(parsed, (err, data) => {
               if (err) {
                 res.statusCode = 422;
@@ -48,7 +49,6 @@ const server = createServer((req, res) => {
       })
       .on('end', () => {
         body = Buffer.concat(body).toString();
-        console.log(body);
         const parsed = JSON.parse(body);
         User.find({username: parsed.username}, (err, record) => {
           if (err) {
@@ -57,8 +57,6 @@ const server = createServer((req, res) => {
             res.end(JSON.stringify('error with login. Incorrect username/password combo'));
             return console.error(err);
           }
-          console.log('jack says label this', parsed);
-          console.log('another', record);
           bcrypt.compare(parsed.password, record[0].password, (err, result) => {
             if (err || !result) {
               res.statusCode = 422;
@@ -94,7 +92,6 @@ const authenticate = (client, data, callback) => {
       return callback((new Error('user not found or dup')));
     }
     socketIds[username] = client.id;
-    console.log('obj key', socketIds);
     return callback(null, true);
   });
 };
@@ -102,13 +99,28 @@ const authenticate = (client, data, callback) => {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-  socket.on('message', (data) => {
-    console.log('this is the data', data);
-    //TODO CURRENTLY GOES TO EVERYONE
-    data.recipients.forEach(person => {
-      io.to(`${socketIds[person]}`).emit('message', data);
-    });
-});
+//   socket.on('unread', (username) => {
+//     User.findById({_id: username}, (err, result) => {
+//       result.unread.forEach(msg => {
+//         io.to(`${socketIds[username]}`).emit('message', JSON.parse(msg));
+//       });
+//       result.unread = [];
+//       result.save(result);
+//     });
+//   });
+
+//   socket.on('message', (data) => {
+//     data.recipients.forEach(person => {
+//       if (socketIds[person]) {
+//         io.to(`${socketIds[person]}`).emit('message', data);
+//       } else {
+//         User.findById({_id: person}, (err, result) => {
+//           result.unread = [...result.unread, JSON.stringify(data)];
+//           result.save(result);
+//         });
+//       }
+//     });
+// });
 
   socket.on('typing', (data) => {
     data.recipients.forEach(person => {
@@ -117,12 +129,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    //can create another storage object so we can have constant lookup, depennds if we want to
+    // prioritize time or space
+    for (let key in socketIds) {
+      if (socketIds[key] === socket.id) {
+        delete socketIds[key];
+      }
+    }
     console.log('user disconnected');
   });
 });
 
 const postAuthenticate = (socket, data) => {
-  // TODO nothing happening in here currently
+  // TODO optional space to add additional logic
 };
 
 socketioAuth(io, { authenticate, postAuthenticate });
@@ -135,3 +154,4 @@ app.prepare().then((_) => {
     console.log(`> App running on port ${PORT}`);
   });
 });
+

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { addHouse } from '../actions/message';
+import offerNotifications from '../utils/notification';
 
 class Browser extends React.Component {
   constructor(props) {
@@ -9,24 +10,29 @@ class Browser extends React.Component {
   }
 
   componentDidMount() {
-    const script_Top = document.createElement("script");
-    script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/PWAbundle.js";
-    script_Top.async = true;
-    document.body.appendChild(script_Top);
+    offerNotifications();
 
-    const script = document.createElement("script");
+    // temporarily shut down the hosting for these aspects of the app
 
-    script.src = "https://s3-us-west-1.amazonaws.com/housing-hr/PWAbundle.js";
-    script.async = true;
+    // const script_Top = document.createElement("script");
+    // script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/PWAbundle.js";
+    // script_Top.async = true;
+    // document.body.appendChild(script_Top);
 
-    document.body.appendChild(script);
+    // const script = document.createElement("script");
+    //
+    // script.src = "https://s3-us-west-1.amazonaws.com/housing-hr/PWAbundle.js";
+    // script.async = true;
+    //
+    // document.body.appendChild(script);
 
-    const delayForRender = () => {
-      const favoriteButton = document.getElementById('add-favorites');
-      favoriteButton.addEventListener('click', this.addFavorite);
-    };
+    // const delayForRender = () => {
+    //   const favoriteButton = document.getElementById('add-favorites');
+    //   favoriteButton.addEventListener('click', this.addFavorite);
+    // };
+    //
+    // setTimeout(delayForRender, 2000);
 
-    setTimeout(delayForRender, 2000);
   }
 
   componentWillUnmount() {

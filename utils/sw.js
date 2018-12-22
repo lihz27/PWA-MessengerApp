@@ -1,25 +1,18 @@
 workbox.core.setCacheNameDetails({ prefix: 'next-ss' });
 
 workbox.skipWaiting();
+
 workbox.clientsClaim();
 
 workbox.precaching.suppressWarnings();
-/**
- * Ignore the non-important files added as a result of
- * webpack's publicPath thingy, for now...
- */
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-/**
- * You can read about Cache Strategies here
- * (https://developers.google.com/web/tools/workbox/modules/workbox-strategies)
- */
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
 workbox.precaching.precacheAndRoute(
   self.__precacheManifest.filter(
     m => !m.url.startsWith('bundles/')
-			&& !m.url.startsWith('static/commons')
-			&& m.url !== 'build-manifest.json',
+      && !m.url.startsWith('static/commons')
+      && m.url !== 'build-manifest.json',
   ),
   {},
 );
@@ -43,7 +36,6 @@ workbox.routing.registerRoute(
   'GET',
 );
 
-// Fetch the root route as fast as possible
 workbox.routing.registerRoute(
   '/',
   workbox.strategies.staleWhileRevalidate({
@@ -52,10 +44,20 @@ workbox.routing.registerRoute(
   'GET',
 );
 
+// browser portion currently not hosted
+
+// workbox.routing.registerRoute(
+//   '/browser',
+//   workbox.strategies.staleWhileRevalidate({
+//     cacheName: 'browser',
+//   }),
+//   'GET',
+// );
+
 workbox.routing.registerRoute(
-  '/browser',
+  '/messenger',
   workbox.strategies.staleWhileRevalidate({
-    cacheName: 'browser',
+    cacheName: 'messenger',
   }),
   'GET',
 );
@@ -67,3 +69,43 @@ workbox.routing.registerRoute(
   }),
   'GET',
 );
+
+self.addEventListener('notificationclick', event => {
+  const notification = event.notification;
+  const action = event.action;
+
+  if (action === 'close') {
+    notification.close();
+  } else {
+    event.waitUntil(
+      clients.matchAll().then(clis => {
+        const client = clis.find(c => {
+          return c.visibilityState === 'visible';
+        });
+        if (client !== undefined) {
+          client.focus();
+        } else {
+          clients.openWindow('/messenger');
+          notification.close();
+        }
+      })
+    );
+  }
+
+  self.registration.getNotifications().then(notifications => {
+    notifications.forEach(notification => {
+      notification.close();
+    });
+  });
+});
+
+
+
+
+
+
+
+
+
+
+

@@ -103,7 +103,7 @@ var Favorites = function Favorites(props) {
         }));
       }
     });
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n      img {\n        cursor: pointer;\n      }\n      #favorites-container {\n        // overflow-x: scroll;\n        // overflow-y: hidden;\n        // white-space: nowrap;\n        margin: 0 .3em 0 .3em;\n        background-color: white;\n        height: 6em;\n        justify-content: space-around;\n      }\n      .fav-image-prev {\n        display: inline-block;\n        width: 5em;\n        height: auto;\n        margin: .5em 1em;\n        border: 3px solid black;\n        // draggable: false;\n        // user-drag: none;\n        // user-select: none;\n        // -moz-user-select: none;\n        // -webkit-user-drag: none;\n        // -webkit-user-select: none;\n        // -ms-user-select: none;\n      }\n      "));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n      img {\n        cursor: pointer;\n      }\n      #favorites-container {\n        margin: 0 .3em 0 .3em;\n        background-color: white;\n        height: 6em;\n        justify-content: space-around;\n      }\n      .fav-image-prev {\n        display: inline-block;\n        width: 5em;\n        height: auto;\n        margin: .5em 1em;\n        border: 3px solid black;\n      }\n      "));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(react_redux__WEBPACK_IMPORTED_MODULE_1__["connect"])(function (_ref) {
@@ -181,12 +181,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! socket.io-client */ "./node_modules/socket.io-client/lib/index.js");
 /* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(socket_io_client__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _actions_message__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../actions/message */ "./actions/message.js");
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Message */ "./components/Message.js");
-/* harmony import */ var _NavBar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./NavBar */ "./components/NavBar.js");
-/* harmony import */ var _Favorites__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Favorites */ "./components/Favorites.js");
-/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-drag-drop-container */ "./node_modules/react-drag-drop-container/lib/bundle.js");
-/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-drag-drop-container */ "./node_modules/react-drag-drop-container/lib/bundle.js");
+/* harmony import */ var react_drag_drop_container__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _actions_message__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../actions/message */ "./actions/message.js");
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Message */ "./components/Message.js");
+/* harmony import */ var _NavBar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./NavBar */ "./components/NavBar.js");
+/* harmony import */ var _Favorites__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Favorites */ "./components/Favorites.js");
+/* harmony import */ var _utils_notification__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/notification */ "./utils/notification.js");
 
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -230,6 +231,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var Messenger =
 /*#__PURE__*/
 function (_React$Component) {
@@ -243,6 +245,8 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Messenger).call(this, props));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleMessage", function (message) {
+      Object(_utils_notification__WEBPACK_IMPORTED_MODULE_9__["messageAlert"])(message.text, message.username);
+
       _this.setState(function (state) {
         return {
           typing: state.typing.filter(function (_ref) {
@@ -253,7 +257,11 @@ function (_React$Component) {
       });
 
       _this.setState(function (state) {
-        return state.friends.add(message.username);
+        var setCopy = new Set(state.friends);
+        setCopy.add(message.username);
+        return {
+          friends: setCopy
+        };
       });
 
       if (message.username === _this.state.currentConvo) {
@@ -274,6 +282,7 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "noUserExists", function () {
+      // TODO placeholder, not for actual use
       alert('User by that name does not exist');
     });
 
@@ -319,7 +328,8 @@ function (_React$Component) {
 
         return {
           currentConvo: otherUser,
-          messages: filtered
+          messages: filtered,
+          otherNewMessage: false
         };
       });
     });
@@ -341,10 +351,13 @@ function (_React$Component) {
               username = _context.sent;
 
               _this.setState(function (state) {
-                //TODO currently no confirmation for friends
-                state.currentConvo = username;
-                state.friends.add(username);
-                return state;
+                // TODO currently no confirmation for friends
+                var setCopy = new Set(state.friends);
+                setCopy.add(username);
+                return {
+                  currentConvo: username,
+                  friends: setCopy
+                };
               }, function () {
                 _this.getCurrentConvo(username);
               });
@@ -382,7 +395,7 @@ function (_React$Component) {
           recipients: [_this.state.currentConvo]
         };
 
-        _this.socket.emit('message', message); //TODO THIS ADDS TO PROPS
+        _this.socket.emit('message', message); // TODO THIS ADDS TO PROPS
 
 
         _this.props.addMessage(_this.state.text, 'text', _this.username, message.created_at, [_this.state.currentConvo]);
@@ -418,8 +431,9 @@ function (_React$Component) {
       _this.props.addMessage(message.text, message.messageType, message.username, message.created_at, message.recipients);
 
       _this.setState(function (state) {
-        state.messages = _toConsumableArray(_this.state.messages).concat([message]);
-        return state;
+        return {
+          messages: _toConsumableArray(_this.state.messages).concat([message])
+        };
       }, function () {
         return _this.scrollToBottom();
       });
@@ -447,11 +461,15 @@ function (_React$Component) {
 
       if (!this.state.messages.length && !this.state.updated) {
         this.setState(function (state) {
+          var setCopy = new Set(state.friends);
+
           _this2.props.messages.forEach(function (msg) {
-            state.friends.add(msg.username);
+            setCopy.add(msg.username);
           });
 
-          return state;
+          return {
+            friends: setCopy
+          };
         });
         var filtered = this.state.currentConvo !== '' ? this.props.messages.filter(function (message) {
           return message.username === _this2.state.currentConvo;
@@ -489,6 +507,8 @@ function (_React$Component) {
         _this3.socket.on('noexist', _this3.noUserExists);
 
         _this3.socket.emit('login', username);
+
+        _this3.socket.emit('unread', username);
       };
 
       setTimeout(connectSocket, 100);
@@ -496,9 +516,9 @@ function (_React$Component) {
     }
   }, {
     key: "componentWillUnmount",
-    value: function componentWillUnmount() {//TODO do we want this to shut off when you navigate away from messenger?
-      //this works current if user goes back to browser
-      //TODO seems like we want to receive messages still
+    value: function componentWillUnmount() {// TODO do I want this to shut off when you navigate away from messenger?
+      // this works current if user goes back to browser
+      // TODO seems like I want to receive messages still
       // this.socket.off('message', this.handleMessage);
       // this.socket.close();
     }
@@ -515,9 +535,9 @@ function (_React$Component) {
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "mdl-card mdl-shadow--2dp",
         id: "chatview"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Favorites__WEBPACK_IMPORTED_MODULE_7__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Favorites__WEBPACK_IMPORTED_MODULE_8__["default"], {
         shareFavorite: this.shareFavorite
-      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_NavBar__WEBPACK_IMPORTED_MODULE_7__["default"], {
         newMessage: this.state.otherNewMessage,
         currentChat: this.state.currentConvo,
         addConvo: this.addConversation,
@@ -525,10 +545,10 @@ function (_React$Component) {
         friends: _toConsumableArray(this.state.friends).filter(function (notUser) {
           return notUser !== _this4.username && notUser !== _this4.state.currentConvo;
         })
-      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_8__["DropTarget"], {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_drag_drop_container__WEBPACK_IMPORTED_MODULE_4__["DropTarget"], {
         targetKey: "fav"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, this.state.messages.map(function (message, i, array) {
-        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Message__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_Message__WEBPACK_IMPORTED_MODULE_6__["default"], {
           key: i,
           message: message,
           username: _this4.username,
@@ -559,7 +579,7 @@ function (_React$Component) {
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
         className: "mdl-textfield__label",
         htmlFor: "message-input"
-      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            .droptarget {\n              height: 440px;\n            }\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              height: 2.4em;\n              font-size: .7em;\n            }\n            #message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 3em;\n            }\n            form {\n              background: #fff;\n              padding: 0px 10px 0px 10px;\n            }\n            ul {\n              position: relative;\n              top:0.5em;\n              height: 350px;\n              margin: 0;\n              padding: 0;\n              text-align: left;\n              list-style: none;\n              overflow-y: scroll;\n            }\n            ul li {\n              padding: 1px;\n              background: #FFF;\n            }\n            .mdl-card {\n              margin: auto;\n              transition: all .3s;\n              // transform: translateY(100px);\n            }\n            .mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n            .timestamp{\n              font-size:10px;\n              font-weight: 300;\n              color: transparent;\n              margin: 3px;\n            }\n            li:hover .my-timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            li:hover .timestamp {\n              color: black;\n              transition: color .8s;\n            }\n          .my-message {\n            display: inline-block;\n            font-weight: 400;\n            background: #00e34d;\n            color: white;\n            border-radius: 10px;\n            padding: 7px;\n            max-width: 50%;\n            word-wrap: break-word;\n            clear: right;\n            line-height: 1.25;\n          }\n          .your-message {\n            display: inline-block;\n            background: #E5E5EA;\n            border-radius: 10px;\n            padding: 7px;\n            word-wrap: break-word;\n            max-width:70%;\n            line-height: 1.25;\n          }\n          .message-username {\n            display: block;\n            font-size: 0.8em;\n            font-weight: bold;\n            line-height: 1.5;\n            margin-left: 0.6em;\n          }\n          .send-msg-btn {\n            cursor:pointer;\n          }\n          .mdl-textfield__label:after{\n            background-color: #0069E0;\n          }\n          "));
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            .droptarget {\n              height: 440px;\n            }\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              margin-top: .5em;\n              height: 2.4em;\n              font-size: .7em;\n            }\n            #message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 3em;\n            }\n            form {\n              background: #fff;\n              padding: 0px 10px 0px 10px;\n            }\n            ul {\n              position: relative;\n              top:0.5em;\n              height: 350px;\n              margin: 0;\n              padding: 0;\n              text-align: left;\n              list-style: none;\n              overflow-y: scroll;\n            }\n            ul li {\n              padding: 1px;\n              background: #FFF;\n            }\n            .mdl-card {\n              margin: auto;\n              transition: all .3s;\n            }\n            .mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n            .timestamp{\n              font-size:10px;\n              font-weight: 300;\n              color: transparent;\n              margin: 3px;\n            }\n            li:hover .my-timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            li:hover .timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            .my-message {\n              display: inline-block;\n              font-weight: 400;\n              background: #00e34d;\n              color: white;\n              border-radius: 10px;\n              padding: 7px;\n              max-width: 50%;\n              word-wrap: break-word;\n              clear: right;\n              line-height: 1.25;\n            }\n            .your-message {\n              display: inline-block;\n              background: #E5E5EA;\n              border-radius: 10px;\n              padding: 7px;\n              word-wrap: break-word;\n              max-width:70%;\n              line-height: 1.25;\n            }\n            .message-username {\n              display: block;\n              font-size: 0.8em;\n              font-weight: bold;\n              line-height: 1.5;\n              margin-left: 0.6em;\n            }\n            .send-msg-btn {\n              cursor:pointer;\n            }\n            .mdl-textfield__label:after{\n              background-color: #0069E0;\n            }\n          "));
     }
   }]);
 
@@ -576,7 +596,7 @@ function (_React$Component) {
     user: user
   };
 }, {
-  addMessage: _actions_message__WEBPACK_IMPORTED_MODULE_4__["addMessage"]
+  addMessage: _actions_message__WEBPACK_IMPORTED_MODULE_5__["addMessage"]
 })(Messenger));
 
 /***/ }),
@@ -609,20 +629,22 @@ var NavBar = function NavBar(_ref) {
     id: "navbar-container"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "convo-status"
-  }, "Chatting with ", currentChat), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
+  }, "Chatting with ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), currentChat), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(next_link__WEBPACK_IMPORTED_MODULE_1___default.a, {
     href: "/browser",
     prefetch: true
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "../static/house.png",
-    id: "house-button",
-    alt: ""
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, newMessage ? 'You have a new message' : '')), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    id: "house-button2"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-home"
+  }, " Home"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "new-message-badge"
+  }, newMessage ? 'New message' : '')), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "dropdown"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "dropbtn"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fas fa-bars"
-  })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, " Menu")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "dropdown-content"
   }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
     onClick: addConvo
@@ -633,7 +655,7 @@ var NavBar = function NavBar(_ref) {
         return getConvo("".concat(friend));
       }
     }, friend);
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        #convo-status {\n          color: white;\n          font-size: .8em;\n        }\n        a {\n          font-size: 12px;\n        }\n        #navbar-container {\n          display: flex;\n          justify-content: flex-end;\n          background-color: #0069E0;\n        }\n        #house-button {\n          margin-right: 12px;\n          height: 50px;\n          width: auto;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            font-size: 16px;\n            border: none;\n            cursor: pointer;\n            width: 120px;\n            margin: .5em .2em;\n            text-align: end;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n             padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        #new-message-badge {\n          background: red;\n          color: white;\n          position: absolute;\n          font-size: .75em;\n          z-index: 1;\n          left: 18em;\n        }\n        #convo-status {\n          color: white;\n          font-size: .8em;\n          position: relative; /*  */\n        }\n        a {\n          font-size: 12px;\n        }\n        #navbar-container {\n          display: flex;\n          justify-content: space-around; /* changed to space-around from flex-end */\n          background-color: #0069E0;\n          height: 3em; /*  */\n        }\n        #house-button {\n          margin-right: 12px;\n          width: auto; /* deleted height */\n        }\n        #house-button:hover {\n          transform: scale(1.2); /* added zoom */\n        }\n        #house-button2 {\n          color: white;\n          position: relative;\n          left: 1.5em;\n          top: 20%;\n          font-size:1em;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            font-size: 1em; /* changed to 1em from 16px */\n            border: none;\n            cursor: pointer;\n            width: 120px;\n            margin: .5em .2em;\n            text-align: end;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n             padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (NavBar);
@@ -9517,7 +9539,7 @@ var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(/*! ws */ 6);
+    NodeWebSocket = __webpack_require__(/*! ws */ 4);
   } catch (e) { }
 }
 
@@ -23337,7 +23359,61 @@ var MessengerView = function MessengerView() {
 
 /***/ }),
 
-/***/ 5:
+/***/ "./utils/notification.js":
+/*!*******************************!*\
+  !*** ./utils/notification.js ***!
+  \*******************************/
+/*! exports provided: default, messageAlert */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "messageAlert", function() { return messageAlert; });
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  if (!('Notification' in window)) {
+    console.log('Notifications not supported in this browser');
+  } else {
+    Notification.requestPermission(function (status) {
+      console.log('Notification permission status:', status);
+    });
+  }
+});
+var messageAlert = function messageAlert(msgBody) {
+  var sender = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'MessengerHouse App';
+
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      navigator.serviceWorker.getRegistration().then(function (reg) {
+        var options = {
+          body: msgBody,
+          tag: 'id1',
+          icon: 'static/img/apple-touch-icon-120x120.png',
+          vibrate: [100, 50, 100],
+          data: {
+            dateOfArrival: Date.now(),
+            primaryKey: 1
+          },
+          actions: [{
+            action: 'explore',
+            title: 'Go to the site',
+            icon: 'static/img/apple-touch-icon-120x120.png'
+          }, {
+            action: 'close',
+            title: 'Close the notification',
+            icon: 'static/img/apple-touch-icon-120x120.png'
+          }]
+        };
+        reg.showNotification("New message from ".concat(sender), options);
+      }).catch(function (err) {
+        return console.error(err);
+      });
+    }
+  }
+};
+
+/***/ }),
+
+/***/ 3:
 /*!**********************************!*\
   !*** multi ./pages/messenger.js ***!
   \**********************************/
@@ -23351,7 +23427,7 @@ return { page: module.exports.default }});
 
 /***/ }),
 
-/***/ 6:
+/***/ 4:
 /*!********************!*\
   !*** ws (ignored) ***!
   \********************/
@@ -23373,5 +23449,5 @@ module.exports = dll_ce91d52655bad4e4cbb5;
 
 /***/ })
 
-},[[5,"static/runtime/webpack.js"]]]));;
+},[[3,"static/runtime/webpack.js"]]]));;
 //# sourceMappingURL=messenger.js.map
