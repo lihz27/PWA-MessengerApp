@@ -5706,7 +5706,7 @@ function connect(options) {
       error.name = err.name;
       error.stack = err.stack; // __NEXT_DIST_DIR is provided by webpack
 
-      (0, _sourceMapSupport.rewriteStacktrace)(error, "/home/jack/personal_proj/PWA-MessengerApp/.next");
+      (0, _sourceMapSupport.rewriteStacktrace)(error, "/Users/brianlouie/Workspace/Side-Projects/PWA-MessengerHouse/.next");
       return error;
     }
   };
@@ -17971,60 +17971,16 @@ if (false) {}
 /***/ }),
 
 /***/ 0:
-/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./utils/offline ./node_modules/next/dist/client/next-dev ***!
-  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** multi ./utils/offline ./utils/offline ./utils/offline ./node_modules/next/dist/client/next-dev ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-__webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/utils/offline */"./utils/offline.js");
-module.exports = __webpack_require__(/*! /home/jack/personal_proj/PWA-MessengerApp/node_modules/next/dist/client/next-dev */"./node_modules/next/dist/client/next-dev.js");
+__webpack_require__(/*! /Users/brianlouie/Workspace/Side-Projects/PWA-MessengerHouse/utils/offline */"./utils/offline.js");
+__webpack_require__(/*! /Users/brianlouie/Workspace/Side-Projects/PWA-MessengerHouse/utils/offline */"./utils/offline.js");
+__webpack_require__(/*! /Users/brianlouie/Workspace/Side-Projects/PWA-MessengerHouse/utils/offline */"./utils/offline.js");
+module.exports = __webpack_require__(/*! /Users/brianlouie/Workspace/Side-Projects/PWA-MessengerHouse/node_modules/next/dist/client/next-dev */"./node_modules/next/dist/client/next-dev.js");
 
 
 /***/ }),
