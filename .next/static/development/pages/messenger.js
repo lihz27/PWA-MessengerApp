@@ -386,7 +386,7 @@ function (_React$Component) {
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleSubmit", function (e) {
       e.preventDefault();
 
-      if (_this.state.text !== '') {
+      if (_this.state.text !== '' && _this.state.currentConvo !== '') {
         var message = {
           created_at: new Date().getTime(),
           username: _this.username,
@@ -395,8 +395,7 @@ function (_React$Component) {
           recipients: [_this.state.currentConvo]
         };
 
-        _this.socket.emit('message', message); // TODO THIS ADDS TO PROPS
-
+        _this.socket.emit('message', message);
 
         _this.props.addMessage(_this.state.text, 'text', _this.username, message.created_at, [_this.state.currentConvo]);
 
@@ -443,7 +442,7 @@ function (_React$Component) {
       text: '',
       messages: [],
       updated: false,
-      currentConvo: '',
+      currentConvo: _this.props.sender || '',
       friends: new Set(),
       typing: [],
       otherNewMessage: false
@@ -491,7 +490,7 @@ function (_React$Component) {
         var _this3$props$user = _this3.props.user,
             username = _this3$props$user.username,
             password = _this3$props$user.password;
-        _this3.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_3___default()('http://localhost:3000');
+        _this3.socket = socket_io_client__WEBPACK_IMPORTED_MODULE_3___default()('https://www.brian-louie.online');
 
         _this3.socket.on('connect', function () {
           _this3.socket.emit('authentication', {
@@ -579,7 +578,7 @@ function (_React$Component) {
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
         className: "mdl-textfield__label",
         htmlFor: "message-input"
-      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            .droptarget {\n              height: 440px;\n            }\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              margin-top: .5em;\n              height: 2.4em;\n              font-size: .7em;\n            }\n            #message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 3em;\n            }\n            form {\n              background: #fff;\n              padding: 0px 10px 0px 10px;\n            }\n            ul {\n              position: relative;\n              top:0.5em;\n              height: 350px;\n              margin: 0;\n              padding: 0;\n              text-align: left;\n              list-style: none;\n              overflow-y: scroll;\n            }\n            ul li {\n              padding: 1px;\n              background: #FFF;\n            }\n            .mdl-card {\n              margin: auto;\n              transition: all .3s;\n            }\n            .mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n            .timestamp{\n              font-size:10px;\n              font-weight: 300;\n              color: transparent;\n              margin: 3px;\n            }\n            li:hover .my-timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            li:hover .timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            .my-message {\n              display: inline-block;\n              font-weight: 400;\n              background: #00e34d;\n              color: white;\n              border-radius: 10px;\n              padding: 7px;\n              max-width: 50%;\n              word-wrap: break-word;\n              clear: right;\n              line-height: 1.25;\n            }\n            .your-message {\n              display: inline-block;\n              background: #E5E5EA;\n              border-radius: 10px;\n              padding: 7px;\n              word-wrap: break-word;\n              max-width:70%;\n              line-height: 1.25;\n            }\n            .message-username {\n              display: block;\n              font-size: 0.8em;\n              font-weight: bold;\n              line-height: 1.5;\n              margin-left: 0.6em;\n            }\n            .send-msg-btn {\n              cursor:pointer;\n            }\n            .mdl-textfield__label:after{\n              background-color: #0069E0;\n            }\n          "));
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("style", null, "\n            .droptarget {\n              height: 440px;\n            }\n            #chatview {\n              width: 320px;\n              height: 568px;\n            }\n            #typing-status {\n              margin-top: .5em;\n              height: 2.4em;\n              font-size: .7em;\n            }\n            #message-input {\n              border-bottom: lightgray solid 1px;\n              border-top: lightgray solid 1px;\n              height: 3em;\n            }\n            form {\n              background: #fff;\n              padding: 0px 10px 0px 10px;\n            }\n            ul {\n              position: relative;\n              top:0.5em;\n              height: 350px;\n              margin: 0;\n              padding: 0;\n              text-align: left;\n              list-style: none;\n              overflow-y: scroll;\n            }\n            ul li {\n              padding: 1px;\n              background: #FFF;\n            }\n            .mdl-card {\n              margin: auto;\n              transition: all .3s;\n            }\n            .mdl-textfield__input {\n              display:inline-block;\n              width: 90%;\n              padding-top: .5em;\n            }\n            .timestamp{\n              font-size:10px;\n              font-weight: 300;\n              color: transparent;\n              margin: 3px;\n            }\n            li:hover .my-timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            li:hover .timestamp {\n              color: black;\n              transition: color .8s;\n            }\n            .my-message {\n              display: inline-block;\n              font-weight: 400;\n              background: #00e34d;\n              color: white;\n              border-radius: 10px;\n              padding: 7px;\n              max-width: 50%;\n              word-wrap: break-word;\n              clear: right;\n              line-height: 1.25;\n              text-align: left; /*  */\n            }\n            .your-message {\n              display: inline-block;\n              background: #E5E5EA;\n              border-radius: 10px;\n              padding: 7px;\n              word-wrap: break-word;\n              max-width:70%;\n              line-height: 1.25;\n            }\n            .message-username {\n              display: block;\n              font-size: 0.8em;\n              font-weight: bold;\n              line-height: 1.5;\n              margin-left: 0.6em;\n            }\n            .send-msg-btn {\n              cursor:pointer;\n            }\n            .mdl-textfield__label:after{\n              background-color: #0069E0;\n            }\n          "));
     }
   }]);
 
@@ -655,7 +654,7 @@ var NavBar = function NavBar(_ref) {
         return getConvo("".concat(friend));
       }
     }, friend);
-  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        #new-message-badge {\n          background: red;\n          color: white;\n          position: absolute;\n          font-size: .75em;\n          z-index: 1;\n          left: 18em;\n        }\n        #convo-status {\n          color: white;\n          font-size: .8em;\n          position: relative; /*  */\n        }\n        a {\n          font-size: 12px;\n        }\n        #navbar-container {\n          display: flex;\n          justify-content: space-around; /* changed to space-around from flex-end */\n          background-color: #0069E0;\n          height: 3em; /*  */\n        }\n        #house-button {\n          margin-right: 12px;\n          width: auto; /* deleted height */\n        }\n        #house-button:hover {\n          transform: scale(1.2); /* added zoom */\n        }\n        #house-button2 {\n          color: white;\n          position: relative;\n          left: 1.5em;\n          top: 20%;\n          font-size:1em;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            font-size: 1em; /* changed to 1em from 16px */\n            border: none;\n            cursor: pointer;\n            width: 120px;\n            margin: .5em .2em;\n            text-align: end;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n             padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
+  }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n        #new-message-badge {\n          background: red;\n          color: white;\n          position: absolute;\n          font-size: .75em;\n          z-index: 1;\n          left: 18em;\n        }\n        #convo-status {\n          color: white;\n          font-size: .8em;\n          position: relative; /*  */\n        }\n        a {\n          font-size: 12px;\n        }\n        #navbar-container {\n          display: flex;\n          justify-content: space-around; /* changed to space-around from flex-end */\n          background-color: #0069E0;\n          height: 3em; /*  */\n        }\n        #house-button {\n          margin-right: 12px;\n          width: auto; /* deleted height */\n        }\n        #house-button:hover {\n          transform: scale(1.2); /* added zoom */\n        }\n        #house-button2 {\n          color: white;\n          position: relative;\n          left: 1.5em;\n          top: 20%;\n          font-size:1em;\n        }\n        .dropbtn {\n            background-color: #0069E0;\n            color: white;\n            font-size: 1em; /* changed to 1em from 16px */\n            border: none;\n            cursor: pointer;\n            width: 120px;\n            margin: .5em .2em;\n            text-align: end;\n        }\n        .dropdown {\n            position: relative;\n            display: inline-block;\n            float: right;\n        }\n        .dropdown-content {\n            margin-top: -.15em;\n            display: none;\n            position: absolute;\n            background-color: #f9f9f9;\n            min-width: 160px;\n            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n            z-index: 1;\n        }\n        .dropdown-content a {\n            color: black;\n             padding: 12px 16px;\n            text-decoration: none;\n            display: block;\n        }\n        .dropdown-content a:hover {background-color: #f1f1f1}\n        .dropdown:hover .dropdown-content {\n            display: block;\n        }\n        .dropdown:hover .dropbtn {\n            background-color: #0069E0;\n        }\n      "));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (NavBar);
@@ -23333,7 +23332,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var MessengerView = function MessengerView() {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Messenger__WEBPACK_IMPORTED_MODULE_1__["default"], null);
+  var endpoint;
+
+  if (typeof window !== 'undefined') {
+    endpoint = window.location.pathname.replace(/\/messenger\//, '');
+  }
+
+  if (endpoint !== '/messenger') {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Messenger__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      sender: endpoint
+    });
+  } else {
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_components_Messenger__WEBPACK_IMPORTED_MODULE_1__["default"], null);
+  }
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (MessengerView);
@@ -23391,7 +23402,8 @@ var messageAlert = function messageAlert(msgBody) {
           vibrate: [100, 50, 100],
           data: {
             dateOfArrival: Date.now(),
-            primaryKey: 1
+            primaryKey: 1,
+            sender: sender
           },
           actions: [{
             action: 'explore',

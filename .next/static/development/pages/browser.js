@@ -3586,9 +3586,8 @@ function (_React$Component) {
     }
   }, {
     key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      var favoriteButton = document.getElementById('add-favorites');
-      favoriteButton.removeEventListener('click', this.addFavorite);
+    value: function componentWillUnmount() {// const favoriteButton = document.getElementById('add-favorites');
+      // favoriteButton.removeEventListener('click', this.addFavorite);
     }
   }, {
     key: "render",
@@ -3672,7 +3671,8 @@ var messageAlert = function messageAlert(msgBody) {
           vibrate: [100, 50, 100],
           data: {
             dateOfArrival: Date.now(),
-            primaryKey: 1
+            primaryKey: 1,
+            sender: sender
           },
           actions: [{
             action: 'explore',

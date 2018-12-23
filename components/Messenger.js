@@ -15,7 +15,7 @@ class Messenger extends React.Component {
       text: '',
       messages: [],
       updated: false,
-      currentConvo: '',
+      currentConvo: this.props.sender || '',
       friends: new Set(),
       typing: [],
       otherNewMessage: false,
@@ -51,7 +51,7 @@ class Messenger extends React.Component {
   componentDidMount() {
     const connectSocket = () => {
       const { username, password } = this.props.user;
-      this.socket = io('http://localhost:3000');
+      this.socket = io('https://www.brian-louie.online');
       this.socket.on('connect', () => {
         this.socket.emit('authentication', { username, password })
       });
@@ -62,9 +62,8 @@ class Messenger extends React.Component {
       this.socket.emit('unread', username);
     };
 
-
     setTimeout(connectSocket, 100);
-    setTimeout(this.scrollToBottom, 100)
+    setTimeout(this.scrollToBottom, 100);
   }
 
   componentWillUnmount() {
@@ -172,7 +171,7 @@ class Messenger extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    if (this.state.text !== '') {
+    if (this.state.text !== '' && this.state.currentConvo !== '') {
       const message = {
         created_at: new Date().getTime(),
         username: this.username,
@@ -183,7 +182,6 @@ class Messenger extends React.Component {
 
       this.socket.emit('message', message);
 
-      // TODO THIS ADDS TO PROPS
       this.props.addMessage(
         this.state.text,
         'text',
@@ -364,6 +362,7 @@ class Messenger extends React.Component {
               word-wrap: break-word;
               clear: right;
               line-height: 1.25;
+              text-align: left; /*  */
             }
             .your-message {
               display: inline-block;

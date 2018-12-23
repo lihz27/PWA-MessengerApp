@@ -27,6 +27,7 @@ const server = createServer((req, res) => {
           bcrypt.hash(parsed.password, salt, function(err, hash) {
             parsed.password = hash;
             parsed._id = parsed.username;
+            parsed.unread = [];
             User.create(parsed, (err, data) => {
               if (err) {
                 res.statusCode = 422;
@@ -74,6 +75,8 @@ const server = createServer((req, res) => {
   } else {
     if (req.url.startsWith('/browser')) {
       req.url = '/browser';
+    } else if (req.url.startsWith('/messenger')) {
+      req.url = '/messenger';
     }
     handle(req, res);
   }
@@ -99,28 +102,31 @@ const authenticate = (client, data, callback) => {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-//   socket.on('unread', (username) => {
-//     User.findById({_id: username}, (err, result) => {
-//       result.unread.forEach(msg => {
-//         io.to(`${socketIds[username]}`).emit('message', JSON.parse(msg));
-//       });
-//       result.unread = [];
-//       result.save(result);
-//     });
-//   });
+  socket.on('unread', (username) => {
+    User.findById({_id: username}, (err, result) => {
+      if (err) {
+        console.error(err);
+      }
+      result.unread.forEach(msg => {
+        io.to(`${socketIds[username]}`).emit('message', JSON.parse(msg));
+      });
+      result.unread = [];
+      result.save(result);
+    });
+  });
 
-//   socket.on('message', (data) => {
-//     data.recipients.forEach(person => {
-//       if (socketIds[person]) {
-//         io.to(`${socketIds[person]}`).emit('message', data);
-//       } else {
-//         User.findById({_id: person}, (err, result) => {
-//           result.unread = [...result.unread, JSON.stringify(data)];
-//           result.save(result);
-//         });
-//       }
-//     });
-// });
+  socket.on('message', (data) => {
+    data.recipients.forEach(person => {
+      if (socketIds[person]) {
+        io.to(`${socketIds[person]}`).emit('message', data);
+      } else {
+        User.findById({_id: person}, (err, result) => {
+          result.unread = [...result.unread, JSON.stringify(data)];
+          result.save(result);
+        });
+      }
+    });
+});
 
   socket.on('typing', (data) => {
     data.recipients.forEach(person => {
@@ -153,5 +159,5 @@ app.prepare().then((_) => {
 
     console.log(`> App running on port ${PORT}`);
   });
-});
+}).catch(err => console.error(err));
 
