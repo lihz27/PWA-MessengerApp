@@ -5,7 +5,9 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const jwtKey = require('./jwtpw');
-
+const apiai = require('apiai');
+const API_KEY = require('./botapikey');
+const appai = apiai(API_KEY);
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dir: '.', dev });
@@ -141,16 +143,18 @@ io.on('connection', (socket) => {
   console.log('a user connected');
 
   socket.on('unread', (username) => {
-    if (username !== undefined) {
+    if (username !== undefined && username !== null) {
       User.findById({_id: username}, (err, result) => {
         if (err) {
-          console.error(err);
+          return console.error(err);
         }
-        result.unread.forEach(msg => {
-          io.to(`${socketIds[username]}`).emit('message', JSON.parse(msg));
-        });
-        result.unread = [];
-        result.save(result);
+        if (result !== null) {
+          result.unread.forEach(msg => {
+            io.to(`${socketIds[username]}`).emit('message', JSON.parse(msg));
+          });
+          result.unread = [];
+          result.save(result);
+        }
       });
     }
   });
@@ -161,8 +165,17 @@ io.on('connection', (socket) => {
         io.to(`${socketIds[person]}`).emit('message', data);
       } else {
         User.findById({_id: person}, (err, result) => {
-          result.unread = [...result.unread, JSON.stringify(data)];
-          result.save(result);
+          if (err) {
+            return console.error(err);
+          }
+          if (result !== null) {
+            result.unread = [...result.unread, JSON.stringify(data)];
+            result.save(result);
+          } else {
+            if(data.username !== 'AgentDemo') {
+              socket.emit('noexist', 'user does not exist');
+            }
+          }
         });
       }
     });
@@ -172,6 +185,59 @@ io.on('connection', (socket) => {
     data.recipients.forEach(person => {
       io.to(`${socketIds[person]}`).emit('typing', data.username);
     });
+  });
+
+  socket.on('botMsg', data => {
+    const request = appai.textRequest(data.text, {sessionId: Math.floor(Math.random() * 36).toString('8')});
+
+    request.on('response', res => {
+      const response = {
+        username: 'AgentDemo',
+        text: res.result.fulfillment.speech,
+        sent: new Date().getTime(),
+        messageType: 'text',
+        recipients: data.username,
+      };
+      const backup = {
+        username: 'AgentDemo',
+        text: [8, 'https://photos.zillowstatic.com/p_b/ISql1xrj9dx8k50000000000.jpg'],
+        messageType: 'link',
+        recipients: [data.username],
+        sent: new Date().getTime(),
+
+      };
+
+      if (data.text === 'first visit') {
+        backup.text = [9, 'https://photos.zillowstatic.com/p_b/IS6qjidjnk8dxo0000000000.jpg'];
+        const welcomeMessage = {
+          username: 'AgentDemo',
+          text: "Welcome to the messenger! To help you demo this, I've decided to send you a" +
+            " couple messages.",
+          sent: new Date().getTime(),
+          messageType: 'text',
+          recipients: data.username,
+        };
+        io.to(`${socketIds[data.username]}`).emit('message', welcomeMessage);
+        welcomeMessage.text = `Because this is a demo, notifications are delivered for each received message (not supported on iOS). Normally, these messages would be for when the user is on a different page or when the app is in the background.`;
+        io.to(`${socketIds[data.username]}`).emit('typing', 'AgentDemo');
+        io.to(`${socketIds[data.username]}`).emit('message', welcomeMessage);
+        setTimeout(() => socket.emit('message', backup), 2500);
+      } else if (res.result.fulfillment.speech !== '') {
+        //TODO only goes to the sender right now
+        io.to(`${socketIds[data.username]}`).emit('typing', 'AgentDemo');
+        setTimeout(() => socket.emit('message', response), 2500);
+      } else {
+        socket.emit('message', backup);
+        backup.text = 'What do you think about this house?';
+        backup.messageType = 'text';
+        io.to(`${socketIds[data.username]}`).emit('message', backup);
+      }
+    });
+
+    request.on('error', err => {
+      console.error(err);
+    });
+    request.end();
   });
 
   socket.on('disconnect', () => {

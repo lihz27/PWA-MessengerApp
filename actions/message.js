@@ -1,4 +1,4 @@
-import { ADD_MESSAGE, ADD_HOUSE, ADD_USER } from '.';
+import { ADD_MESSAGE, ADD_HOUSE, ADD_USER, REMOVE_HOUSE } from '.';
 
 export function addMessage(text, messageType, username, created_at, recipients) {
   return {
@@ -20,10 +20,16 @@ export function addHouse(house_id, username, imgUrl) {
   };
 }
 
-export function addUser(username, password) {
+export function addUser(username) {
   return {
     type: ADD_USER,
     username,
-    password,
+  }
+}
+
+export function removeHouse(house_id) {
+  return {
+    type: REMOVE_HOUSE,
+    house_id,
   }
 }

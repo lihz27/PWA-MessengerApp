@@ -1,49 +1,111 @@
 import React from 'react';
-import Link from 'next/link'
+import Link from 'next/link';
+import {OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+const tooltipMenu = (
+  <Tooltip placement="bottom" className="tooltopMessenger" id="tooltip-menu">
+    Hover here to see the menu. You can add a new conversation by username or chat with our Agent bot to demo the messenger!
+  </Tooltip>
+);
 
 const NavBar = ({
-  getConvo,
+  switchConvo,
   friends,
   newMessage,
   changeHome,
   changeMessage,
   addConvo,
-  currentChat
+  currentChat,
+  newMessageCount,
+  tooltip
 }) => {
+  const newMessageNum = Object.values(newMessageCount).reduce(
+    (total, cur) => total + cur,
+    0,
+  );
+
   return (
     <div id="navbar-container">
-      <div id='convo-status'>
-        Chatting with <br/>
+      <div id="convo-status">
+        Chatting with
+        {' '}
+        <br />
         {currentChat}
       </div>
-      <Link href='/browser' prefetch>
-        <a id="house-button2"><i className="fa fa-home"> Home</i></a>
-
-      </Link>
-      <span>
-        <div id='new-message-badge'>{newMessage ? 'New message' : ''}</div>
-    </span>
-      <div className="dropdown">
-        <button className="dropbtn"
-        ><i className="fas fa-bars"> Menu</i></button>
+        <Link
+          id="house-button2"
+          href='/browser'
+          prefetch
+        >
+          <span id="house-button2">
+          <i className="fa fa-home"> <span className='fa-text'>Browse</span></i>
+          </span>
+        </Link>
+      <div
+        className="dropdown"
+        id='dropdown-tooltip'>
+        {tooltip &&
+        <OverlayTrigger
+          placement="top"
+          defaultOverlayShown={true}
+          overlay={tooltipMenu}
+        >
+        <button className="dropbtn">
+          <i className="fas fa-bars"> <span className='fa-text'>Menu</span></i>
+        </button>
+        </OverlayTrigger>}
+        {!tooltip &&
+        <button className="dropbtn">
+          <i className="fas fa-bars"> <span className='fa-text'>Menu</span></i>
+        </button>}
+        <span>
+          {newMessage && (
+          <div id="new-message-badge" className="msg-count-badge">
+            {newMessage ? newMessageNum : ''}
+          </div>
+        )}
+        </span>
         <div className="dropdown-content">
           <a onClick={addConvo}>Start a new convo</a>
+          {/* gets the 5 most recent convos, not sure if it makes sense to have a giant list of
+           people */}
           {friends.slice(-5).map((friend, i) => (
-            <a key={i} onClick={() => getConvo(`${friend}`)}>
+            <a key={i} onClick={() => switchConvo(`${friend}`)}>
+              {newMessageCount[friend] && (
+                <div className="msg-count-badge">{newMessageCount[friend]}</div>
+              )}
               {friend}
             </a>
           ))}
+          <a
+            id='add-agent-button'
+            onClick={() => switchConvo('AgentDemo')}
+          >
+            Chat with an agent
+          </a>
         </div>
       </div>
       <style>
         {`
-        #new-message-badge {
+        .fa-text {
+          font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        .msg-count-badge {
           background: red;
           color: white;
-          position: absolute;
+          margin-right: 1em;
           font-size: .75em;
           z-index: 1;
-          left: 18em;
+          border-radius: 100%;
+          line-height: 1.2em;
+          height: 1.2em;
+          width: 1.2em;
+          text-align: center;
+          display: inline-block;
+        }
+        #new-message-badge {
+          position: absolute;
+          margin-right: 0;
         }
         #convo-status {
           color: white;
@@ -52,12 +114,15 @@ const NavBar = ({
         }
         a {
           font-size: 12px;
+          cursor: pointer;
         }
         #navbar-container {
+          height: 2.3em;
+          margin-top: .5em;
           display: flex;
           justify-content: space-around; /* changed to space-around from flex-end */
           background-color: #0069E0;
-          height: 3em; /*  */
+          z-index: 1;
         }
         #house-button {
           margin-right: 12px;
@@ -70,8 +135,9 @@ const NavBar = ({
           color: white;
           position: relative;
           left: 1.5em;
-          top: 20%;
           font-size:1em;
+          margin-top: .37em;
+          cursor: pointer;
         }
         .dropbtn {
             background-color: #0069E0;
@@ -79,9 +145,10 @@ const NavBar = ({
             font-size: 1em; /* changed to 1em from 16px */
             border: none;
             cursor: pointer;
-            width: 120px;
-            margin: .5em .2em;
+            width: 90px;
             text-align: end;
+            margin-top: .27em;
+            z-index: 1;
         }
         .dropdown {
             position: relative;
@@ -89,7 +156,6 @@ const NavBar = ({
             float: right;
         }
         .dropdown-content {
-            margin-top: -.15em;
             display: none;
             position: absolute;
             background-color: #f9f9f9;
@@ -99,7 +165,7 @@ const NavBar = ({
         }
         .dropdown-content a {
             color: black;
-             padding: 12px 16px;
+             padding: .5em 16px;
             text-decoration: none;
             display: block;
         }
@@ -109,6 +175,9 @@ const NavBar = ({
         }
         .dropdown:hover .dropbtn {
             background-color: #0069E0;
+        }
+        .fas {
+          padding: 0;
         }
       `}
       </style>

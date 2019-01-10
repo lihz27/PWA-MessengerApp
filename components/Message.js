@@ -1,11 +1,11 @@
-import React from 'react'
-import dayjs from 'dayjs'
-import Link from 'next/link'
+import React from 'react';
+import dayjs from 'dayjs';
+import Link from 'next/link';
 
-export default ({ message, username, firstMessage }) => {
+export default ({message, username, firstMessage}) => {
   const ownMessage = username === message.username;
   return (
-    <li style={{ listStyle: 'none' }}>
+    <li style={{listStyle: 'none'}}>
       <div className="message-container">
         <div className={ownMessage ? 'my-subcontainer' : 'your-subcontainer'}>
           {ownMessage && (
@@ -22,11 +22,12 @@ export default ({ message, username, firstMessage }) => {
             {message.messageType === 'text' ? (
               message.text
             ) : (
-              <Link href={`/browser/${message.text[0]}`}>
+              <Link href={`/browser/${message.text[0]}`} prefetch>
                 <img
                   className="shared-fav"
                   src={message.text[1]}
                   alt="house-preview"
+                  crossOrigin='anonymous'
                 />
               </Link>
             )}
@@ -56,5 +57,5 @@ export default ({ message, username, firstMessage }) => {
         `}
       </style>
     </li>
-  )
-}
+  );
+};

@@ -1,12 +1,12 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import io from 'socket.io-client'
-import { DropTarget } from 'react-drag-drop-container'
-import { addMessage } from '../actions/message'
-import Message from './Message'
-import NavBar from './NavBar'
-import Favorites from './Favorites'
-import { messageAlert } from '../utils/notification'
+import React from 'react';
+import {connect} from 'react-redux';
+import io from 'socket.io-client';
+import {DropTarget} from 'react-drag-drop-container';
+import {addMessage} from '../actions/message';
+import Message from './Message';
+import NavBar from './NavBar';
+import Favorites from './Favorites';
+import {messageAlert} from '../utils/notification';
 
 class Messenger extends React.Component {
   constructor(props) {
@@ -19,7 +19,52 @@ class Messenger extends React.Component {
       friends: new Set(),
       typing: [],
       otherNewMessage: false,
-    }
+      unread: {},
+      welcome: false,
+      rendered: false,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      rendered: true,
+    });
+    const connectSocket = () => {
+      const {username} = this.props.user;
+      this.socket = io('https://www.brian-louie.online');
+      this.socket.on('connect', () => {
+        this.socket.emit('authentication', {username});
+      });
+      this.socket.on('message', this.handleMessage);
+      this.socket.on('typing', this.typingStatus);
+      this.socket.on('noexist', this.noUserExists);
+      this.socket.emit('login', username);
+      this.socket.emit('unread', username);
+
+      if (typeof Storage !== 'undefined') {
+        if (!localStorage.getItem('firstTime')) {
+          localStorage.setItem('firstTime', 'true');
+          const botMessage = {
+            text: 'first visit',
+            username: username,
+          };
+          this.setState({welcome: true});
+          this.setState({currentConvo: 'AgentDemo'});
+          this.socket.emit('botMsg', botMessage);
+          setTimeout(this.hideWelcome, 15000);
+        } else {
+          this.hideWelcome();
+          if (this.props.messages.length) {
+            const lastConvo = this.props.messages.filter(el => el.username !== username);
+            if (lastConvo.length) {
+              this.getCurrentConvo(lastConvo[lastConvo.length - 1].username);
+            }
+          }
+        }
+      }
+    };
+    setTimeout(connectSocket, 100);
+    setTimeout(this.scrollToBottom, 100);
   }
 
   componentDidUpdate() {
@@ -29,7 +74,7 @@ class Messenger extends React.Component {
       this.setState(state => {
         const setCopy = new Set(state.friends);
         this.props.messages.forEach(msg => {
-          setCopy.add(msg.username)
+          setCopy.add(msg.username);
         });
         return {friends: setCopy};
       });
@@ -44,41 +89,24 @@ class Messenger extends React.Component {
       this.setState({
         messages: filtered,
         updated: true,
-      })
+      });
     }
   }
 
-  componentDidMount() {
-    const connectSocket = () => {
-      const { username, password } = this.props.user;
-      this.socket = io('https://www.brian-louie.online');
-      this.socket.on('connect', () => {
-        this.socket.emit('authentication', { username, password })
-      });
-      this.socket.on('message', this.handleMessage);
-      this.socket.on('typing', this.typingStatus);
-      this.socket.on('noexist', this.noUserExists);
-      this.socket.emit('login', username);
-      this.socket.emit('unread', username);
-    };
-
-    setTimeout(connectSocket, 100);
-    setTimeout(this.scrollToBottom, 100);
-  }
-
-  componentWillUnmount() {
-    // TODO do I want this to shut off when you navigate away from messenger?
-    // this works current if user goes back to browser
-    // TODO seems like I want to receive messages still
-    // this.socket.off('message', this.handleMessage);
-    // this.socket.close();
-  }
+  hideWelcome = () => {
+    this.setState({welcome: false});
+  };
 
   handleMessage = message => {
-    messageAlert(message.text, message.username);
+    if (message.messageType === 'text') {
+      messageAlert(message.text, message.username);
+    } else {
+      messageAlert('Check out this house!', message.username);
+    }
+
     this.setState(state => ({
       typing: state.typing.filter(
-        ({ username }) => username !== message.username,
+        ({username}) => username !== message.username,
       ),
     }));
     this.setState(state => {
@@ -87,9 +115,20 @@ class Messenger extends React.Component {
       return {friends: setCopy};
     });
     if (message.username === this.state.currentConvo) {
-      this.setState(state => ({ messages: state.messages.concat(message) }))
+      this.setState(state => ({messages: state.messages.concat(message)}));
     } else {
-      this.setState({ otherNewMessage: true })
+      this.setState(state => {
+        const updated = {...state.unread};
+        if (updated[message.username]) {
+          updated[message.username] += 1;
+        } else {
+          updated[message.username] = 1;
+        }
+        return {
+          otherNewMessage: true,
+          unread: updated,
+        };
+      });
     }
     this.props.addMessage(
       message.text,
@@ -102,8 +141,10 @@ class Messenger extends React.Component {
   };
 
   noUserExists = () => {
+    if (this.state.currentConvo !== 'AgentDemo') {
+      alert('User by that name does not exist');
+    }
     // TODO placeholder, not for actual use
-    alert('User by that name does not exist')
   };
 
   typingStatus = data => {
@@ -111,52 +152,58 @@ class Messenger extends React.Component {
       const notIncluded = this.state.typing.filter(el => el.username !== data);
       for (let i = 0, len = this.state.typing.length; i < len; ++i) {
         if (this.state.typing[i].username === data) {
-          clearTimeout(this.state.typing[i].timeoutId)
+          clearTimeout(this.state.typing[i].timeoutId);
         }
       }
       const timeoutId = setTimeout(() => {
         this.setState(state => ({
           typing: state.typing.filter(el => el.username !== data),
-        }))
+        }));
       }, 3000);
-      const status = { username: data, timeoutId };
-      this.setState(state => ({ typing: [...notIncluded, status] }))
+      const status = {username: data, timeoutId};
+      this.setState(state => ({typing: [...notIncluded, status]}));
     }
   };
 
-  getCurrentConvo = otherUser => {
-    this.setState(() => {
+  getCurrentConvo = newConvo => {
+    this.setState(state => {
       const filtered = this.props.messages.filter(
         message =>
-          message.username === otherUser ||
+          message.username === newConvo ||
           (message.username === this.username &&
-            message.recipients.includes(otherUser))
+            message.recipients.includes(newConvo)),
       );
+      const newUnread = {...state.unread};
+      delete newUnread[newConvo];
       return {
-        currentConvo: otherUser,
+        currentConvo: newConvo,
         messages: filtered,
+        unread: newUnread,
         otherNewMessage: false,
-      }
-    })
+      };
+    });
   };
 
   addConversation = async () => {
-    //TODO placeholder prompt
+    // TODO placeholder prompt
     const username = await prompt('enter a username');
-    this.setState(
-      state => {
-        // TODO currently no confirmation for friends
-        const setCopy = new Set(state.friends);
-        setCopy.add(username);
-        return {
-          currentConvo: username,
-          friends: setCopy,
-        }
-      },
-      () => {
-        this.getCurrentConvo(username)
-      },
-    )
+    if (username && username.replace(/\s/g, '')) {
+      this.setState(
+        state => {
+          // TODO currently no confirmation for friends
+          const setCopy = new Set(state.friends);
+          setCopy.add(username);
+          return {
+            currentConvo: username,
+            friends: setCopy,
+          };
+        },
+        () => {
+          this.getCurrentConvo(username);
+        },
+      );
+    }
+
   };
 
   showTypingStatus = e => {
@@ -165,13 +212,13 @@ class Messenger extends React.Component {
       recipients: [this.state.currentConvo],
     };
     this.socket.emit('typing', typingStatus);
-    this.setState({ text: e.target.value })
+    this.setState({text: e.target.value});
   };
 
   handleSubmit = e => {
     e.preventDefault();
 
-    if (this.state.text !== '' && this.state.currentConvo !== '') {
+    if (this.state.text.replace(/\s/g, '') !== '' && this.state.currentConvo !== '') {
       const message = {
         created_at: new Date().getTime(),
         username: this.username,
@@ -181,6 +228,10 @@ class Messenger extends React.Component {
       };
 
       this.socket.emit('message', message);
+
+      if(this.state.currentConvo === 'AgentDemo') {
+        this.socket.emit('botMsg', message);
+      }
 
       this.props.addMessage(
         this.state.text,
@@ -192,28 +243,35 @@ class Messenger extends React.Component {
       this.setState(state => ({
         text: '',
         messages: this.state.messages.concat(message),
-      }))
+      }));
     }
   };
 
   scrollToBottom = () => {
     if (this.el) {
-      this.el.scrollIntoView({ behavior: 'instant' })
+      this.el.scrollIntoView({behavior: 'instant'});
     }
   };
 
-  shareFavorite = arrayIdx => {
+  shareFavorite = houseObj => {
     const message = {
       created_at: new Date().getTime(),
       username: this.username,
       text: [
-        this.props.houses[arrayIdx].house_id,
-        this.props.houses[arrayIdx].imgUrl,
+        houseObj.house_id,
+        houseObj.imgUrl,
       ],
       messageType: 'link',
       recipients: [this.state.currentConvo],
     };
     this.socket.emit('message', message);
+    if (this.state.currentConvo === 'AgentDemo') {
+      const msg = {
+        username: this.username,
+        text: 'this is awesome',
+      };
+      this.socket.emit('botMsg', msg);
+    }
     this.props.addMessage(
       message.text,
       message.messageType,
@@ -222,11 +280,10 @@ class Messenger extends React.Component {
       message.recipients,
     );
     this.setState(
-      state => ({messages: [...this.state.messages, message]}),
+      state => ({messages: [...state.messages, message]}),
       () => this.scrollToBottom(),
-    )
+    );
   };
-
 
   render() {
     const sameUser = (msg, i, arr) =>
@@ -241,13 +298,18 @@ class Messenger extends React.Component {
             } are typing...`
           : 'several people are typing';
     return (
-      <div className="mdl-card mdl-shadow--2dp" id="chatview">
-        <Favorites shareFavorite={this.shareFavorite} />
+      <div id="chatview">
+        <Favorites
+          shareFavorite={this.shareFavorite}
+          tooltip={this.state.welcome}
+        />
         <NavBar
           newMessage={this.state.otherNewMessage}
+          newMessageCount={this.state.unread}
           currentChat={this.state.currentConvo}
           addConvo={this.addConversation}
-          getConvo={this.getCurrentConvo}
+          switchConvo={this.getCurrentConvo}
+          tooltip={this.state.welcome}
           friends={[...this.state.friends].filter(
             notUser =>
               notUser !== this.username && notUser !== this.state.currentConvo,
@@ -274,31 +336,77 @@ class Messenger extends React.Component {
           <i>{typingStatusMessage}</i>
         </div>
         <form onSubmit={this.handleSubmit} autoComplete="off">
-          <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <div
+            className="msg-input-class"
+            id='msg-input-container'
+          >
             <input
               type="text"
               value={this.state.text}
               onChange={this.showTypingStatus}
-              className="mdl-textfield__input"
+              className="msg-input-class"
               id="message-input"
               placeholder="Send a message"
+              aria-label='message input'
             />
 
-            <span onClick={this.handleSubmit}>
+            <span
+              onClick={this.handleSubmit}
+              id='send-msg-button'
+            >
               <i className="far fa-comment" />
             </span>
 
-            <label className="mdl-textfield__label" htmlFor="message-input" />
+            <label htmlFor="message-input" />
           </div>
         </form>
         <style>
           {`
+            #tooltip-bottom {
+              display: none;
+            }
+            .tooltip > .tooltip-inner {
+            background: #3c00e0;
+            border: solid 1px #3c00e0;
+            }
+            .tooltip .arrow::before {
+              border-bottom-color: #3c00e0;
+              border-right-color: #3c00e0;
+            }
+            html {
+              height: 100%;
+              background: white;
+            }
+            #send-msg-button {
+              margin-left: .5em;
+              font-size: 1.3em;
+            }
+            #__next {
+              height: 100%;
+              min-height: 876px;
+              width: auto;
+            }
+            body {
+                height: 100%;
+                background:
+                linear-gradient(
+                  rgba(0, 116, 228, 0.75),
+                  rgba(0, 116, 228, 0.75)
+                ),
+                center no-repeat
+                url(./static/img/house-background.jpg);
+                background-size: cover;
+            }
             .droptarget {
-              height: 440px;
+              height: 63vh;
             }
             #chatview {
-              width: 320px;
-              height: 568px;
+              width: auto;
+              height: 100%;
+              max-width: 800px;
+              border: solid lightgrey 1px;
+              margin: auto;
+              background: white;
             }
             #typing-status {
               margin-top: .5em;
@@ -309,6 +417,7 @@ class Messenger extends React.Component {
               border-bottom: lightgray solid 1px;
               border-top: lightgray solid 1px;
               height: 3em;
+              border-radius: .5em;
             }
             form {
               background: #fff;
@@ -317,7 +426,7 @@ class Messenger extends React.Component {
             ul {
               position: relative;
               top:0.5em;
-              height: 350px;
+              height: 63vh;
               margin: 0;
               padding: 0;
               text-align: left;
@@ -328,13 +437,12 @@ class Messenger extends React.Component {
               padding: 1px;
               background: #FFF;
             }
-            .mdl-card {
-              margin: auto;
-              transition: all .3s;
+            #msg-input-container {
+              width: 100%;
             }
-            .mdl-textfield__input {
+            .msg-input-class {
               display:inline-block;
-              width: 90%;
+              width: 87%;
               padding-top: .5em;
             }
             .timestamp{
@@ -358,7 +466,7 @@ class Messenger extends React.Component {
               color: white;
               border-radius: 10px;
               padding: 7px;
-              max-width: 50%;
+              max-width: 80%;
               word-wrap: break-word;
               clear: right;
               line-height: 1.25;
@@ -370,7 +478,7 @@ class Messenger extends React.Component {
               border-radius: 10px;
               padding: 7px;
               word-wrap: break-word;
-              max-width:70%;
+              max-width:80%;
               line-height: 1.25;
             }
             .message-username {
@@ -383,17 +491,47 @@ class Messenger extends React.Component {
             .send-msg-btn {
               cursor:pointer;
             }
-            .mdl-textfield__label:after{
-              background-color: #0069E0;
+            @media only screen and (min-width: 320px) and (max-width: 374px){
+              #__next {
+                min-height: 0px;
+              }
+              .droptarget {
+                height: 23em;
+              }
+              ul {
+                height: 23em;
+              }
+            }
+            @media only screen and (min-width: 375px) and (max-width: 699px){
+              #__next {
+                min-height: 0px;
+              }
+              .droptarget {
+                height: 67vh;
+              }
+              ul {
+                height: 67vh;
+              }
+            }
+            @media only screen and (min-width: 700px) and (max-width: 3600px){
+              .droptarget {
+                height: 78vh;
+              }
+              ul {
+                height: 78vh;
+              }
+              #__next {
+                font-size: 18px;
+              }
             }
           `}
         </style>
       </div>
-    )
+    );
   }
 }
 
 export default connect(
-  ({ messages, houses, user }) => ({ messages, houses, user }),
-  { addMessage },
-)(Messenger)
+  ({messages, houses, user}) => ({messages, houses, user}),
+  {addMessage},
+)(Messenger);

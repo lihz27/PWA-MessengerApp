@@ -97,7 +97,7 @@ module.exports =
 /*!**************************!*\
   !*** ./actions/index.js ***!
   \**************************/
-/*! exports provided: ADD_MESSAGE, ADD_HOUSE, ADD_USER */
+/*! exports provided: ADD_MESSAGE, ADD_HOUSE, ADD_USER, REMOVE_HOUSE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -105,9 +105,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_MESSAGE", function() { return ADD_MESSAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_HOUSE", function() { return ADD_HOUSE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ADD_USER", function() { return ADD_USER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "REMOVE_HOUSE", function() { return REMOVE_HOUSE; });
 var ADD_MESSAGE = 'ADD_MESSAGE';
 var ADD_HOUSE = 'ADD_HOUSE';
 var ADD_USER = 'ADD_USER';
+var REMOVE_HOUSE = 'REMOVE_HOUSE';
 
 /***/ }),
 
@@ -115,7 +117,7 @@ var ADD_USER = 'ADD_USER';
 /*!****************************!*\
   !*** ./actions/message.js ***!
   \****************************/
-/*! exports provided: addMessage, addHouse, addUser */
+/*! exports provided: addMessage, addHouse, addUser, removeHouse */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -123,6 +125,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addMessage", function() { return addMessage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addHouse", function() { return addHouse; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addUser", function() { return addUser; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeHouse", function() { return removeHouse; });
 /* harmony import */ var ___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! . */ "./actions/index.js");
 
 function addMessage(text, messageType, username, created_at, recipients) {
@@ -148,6 +151,12 @@ function addUser(username, password) {
     type: ___WEBPACK_IMPORTED_MODULE_0__["ADD_USER"],
     username: username,
     password: password
+  };
+}
+function removeHouse(house_id) {
+  return {
+    type: ___WEBPACK_IMPORTED_MODULE_0__["REMOVE_HOUSE"],
+    house_id: house_id
   };
 }
 
@@ -206,7 +215,7 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Browser).call(this, props));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "addFavorite", function () {
-      var imgUrl = document.querySelector('.home-profile-image').getAttribute('src');
+      var imgUrl = document.querySelector('.img-responsive').getAttribute('src');
       var houseNum = 0;
       var houseId = Number(window.location.pathname.replace(/\/browser\//, ''));
 
@@ -216,11 +225,21 @@ function (_React$Component) {
 
       for (var i = 0, len = _this.props.houses.length; i < len; ++i) {
         if (_this.props.houses[i].house_id === houseNum) {
+          _this.props.removeHouse(houseNum);
+
           return;
         }
       }
 
       _this.props.addHouse(houseNum, _this.props.user.username, imgUrl);
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleMessengerClick", function () {
+      window.location.pathname = 'messenger';
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleAgent", function () {
+      window.location.pathname = 'messenger/AgentDemo';
     });
 
     return _this;
@@ -229,41 +248,49 @@ function (_React$Component) {
   _createClass(Browser, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      Object(_utils_notification__WEBPACK_IMPORTED_MODULE_3__["default"])(); // temporarily shut down the hosting for these aspects of the app
-      // const script_Top = document.createElement("script");
-      // script_Top.src = "https://s3-us-west-1.amazonaws.com/img-gallery-hr/PWAbundle.js";
-      // script_Top.async = true;
-      // document.body.appendChild(script_Top);
-      // const script = document.createElement("script");
-      //
-      // script.src = "https://s3-us-west-1.amazonaws.com/housing-hr/PWAbundle.js";
-      // script.async = true;
-      //
-      // document.body.appendChild(script);
-      // const delayForRender = () => {
-      //   const favoriteButton = document.getElementById('add-favorites');
-      //   favoriteButton.addEventListener('click', this.addFavorite);
-      // };
-      //
-      // setTimeout(delayForRender, 2000);
+      var _this2 = this;
+
+      Object(_utils_notification__WEBPACK_IMPORTED_MODULE_3__["default"])();
+      var script_Top = document.createElement("script");
+      script_Top.src = "https://s3-us-west-1.amazonaws.com/pwamobileimggallery/bundle.js";
+      script_Top.async = true;
+      document.body.appendChild(script_Top);
+      var script = document.createElement('script');
+      script.src = 'https://s3-us-west-1.amazonaws.com/elasticbeanstalk-us-west-1-658824784294/bundle.js';
+      script.async = true;
+      document.body.appendChild(script);
+
+      var delayForRender = function delayForRender() {
+        var favoriteButton = document.getElementById('add-favorites');
+        var messengerButton = document.getElementById('messenger-button');
+        var agentButton = document.getElementById('chat-agent');
+        favoriteButton.addEventListener('click', _this2.addFavorite);
+        messengerButton.addEventListener('click', _this2.handleMessengerClick);
+        agentButton.addEventListener('click', _this2.handleAgent);
+      };
+
+      setTimeout(delayForRender, 1000);
     }
   }, {
     key: "componentWillUnmount",
-    value: function componentWillUnmount() {// const favoriteButton = document.getElementById('add-favorites');
-      // favoriteButton.removeEventListener('click', this.addFavorite);
+    value: function componentWillUnmount() {
+      var favoriteButton = document.getElementById('add-favorites');
+      favoriteButton.removeEventListener('click', this.addFavorite);
+      var messengerButton = document.getElementById('messenger-button');
+      messengerButton.removeEventListener('click', this.handleMessengerClick);
+      var agentButton = document.getElementById('chat-agent');
+      agentButton.removeEventListener('click', this.handleAgent);
     }
   }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "browse-homes"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: "/messenger"
-      }, "Messenger"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        id: "top-app"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        id: "app"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "main"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n            #main {\n              margin-left: -105px;\n              transform: scale(.5);\n            }\n            #browse-homes {\n              max-width: 100%;\n              max-height: 100%;\n            }\n            html.mdl-js {\n              background: white !important;\n            }\n          @media (max-width: 320px) {\n\n            }\n\n          "));
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("style", null, "\n            #main {\n              margin-left: .5em;\n              overflow: hidden;\n            }\n          "));
     }
   }]);
 
@@ -278,7 +305,8 @@ function (_React$Component) {
     user: user
   };
 }, {
-  addHouse: _actions_message__WEBPACK_IMPORTED_MODULE_2__["addHouse"]
+  addHouse: _actions_message__WEBPACK_IMPORTED_MODULE_2__["addHouse"],
+  removeHouse: _actions_message__WEBPACK_IMPORTED_MODULE_2__["removeHouse"]
 })(Browser));
 
 /***/ }),
@@ -310,8 +338,7 @@ var messageAlert = function messageAlert(msgBody) {
       navigator.serviceWorker.getRegistration().then(function (reg) {
         var options = {
           body: msgBody,
-          tag: 'id1',
-          icon: 'static/img/apple-touch-icon-120x120.png',
+          icon: 'static/img/icon-128x128.png',
           vibrate: [100, 50, 100],
           data: {
             dateOfArrival: Date.now(),
@@ -321,11 +348,11 @@ var messageAlert = function messageAlert(msgBody) {
           actions: [{
             action: 'explore',
             title: 'Go to the site',
-            icon: 'static/img/apple-touch-icon-120x120.png'
+            icon: 'static/img/icon-128x128.png'
           }, {
             action: 'close',
             title: 'Close the notification',
-            icon: 'static/img/apple-touch-icon-120x120.png'
+            icon: 'static/img/icon-128x128.png'
           }]
         };
         reg.showNotification("New message from ".concat(sender), options);
